@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     master = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
 
-#Table for Saving Messages between Users
+#Table which save the sender and the reciever of Messages 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
     receiver = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
