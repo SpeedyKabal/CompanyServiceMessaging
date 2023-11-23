@@ -6,8 +6,11 @@ from django.http import HttpResponse, HttpResponseNotFound
 
 
 def index(request):
-    try:
+    #try:
         return render(request, "Pages/index.html", {'name' : "Variable Value"})
-    except:
-        return HttpResponseNotFound("<h1>Page Not Found</h1>")
-        
+    #except:
+        #return HttpResponseNotFound("<h1>Page Not Found</h1>")
+
+
+def signMeUp(request):
+        return render(request, "Pages/signUP.html")

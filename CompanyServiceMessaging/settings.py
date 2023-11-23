@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'CSM.apps.CsmConfig',
+    'CSM',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
