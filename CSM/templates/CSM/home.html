@@ -1,4 +1,4 @@
-{% extends "Pages/base.html" %}
+{% extends "CSM/base.html" %}
 
 {% block title %}
     Home Page
@@ -15,7 +15,7 @@
 
             <div class="flex flex-wrap justify-between">
                 <span class="ml-2 text-xl text-neutral-800 dark:text-neutral-200">Welcome {{user.username}}</span>
-                <a class="ml-2 text-xl text-neutral-800 dark:text-neutral-200" href="{% url 'CSM:SignOut' %}">Logout</a>
+                <a class="ml-2 text-xl text-neutral-800 dark:text-neutral-200" href="/Logout">Logout</a>
             </div>
 
             <div class="ml-5 flex w-[30%] items-center justify-between">

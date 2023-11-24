@@ -5,7 +5,8 @@ app_name = "CSM"
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("register", views.signMeUp, name="SignUp"),
-    path("home", views.home, name="home"),
-    path("Logout", views.signMeOut, name="SignOut")
+    path("register/", views.signMeUp, name="SignUp"),
+    path("home/", views.home, name="home"),
+    path("Logout/", views.signMeOut, name="SignOut"),
+    path("<str:user_profile>/", views.profile, name="Profile")
 ]

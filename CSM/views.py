@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
@@ -6,10 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import auth
 from django.http.response import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 
-
-nam
 
 def index(request):
     if request.method == "POST":
@@ -20,12 +20,12 @@ def index(request):
 
         if user is not None:
             auth.login(request, user)
-            return HttpResponseRedirect("/home")
+            return redirect("CSM:home")
         else:
             messages.error(request,"Username or Password Incorrect")
-            return HttpResponseRedirect("/")
+            return redirect("CSM:index")
 
-    return render(request, "Pages/index.html", {'name' : "Variable Value"})
+    return render(request, "CSM/index.html")
 
 
 
@@ -41,24 +41,31 @@ def signMeUp(request):
         if password1==password2:
             if User.objects.filter(email=email).exists():
                 messages.error(request, "Email Already Existe")
-                return HttpResponseRedirect("/register")
+                return redirect("CSM:SignUp")
             elif User.objects.filter(username=username).exists():
                 messages.error(request, "Username Not Available")
-                return HttpResponseRedirect("/register")
+                return redirect("CSM:SignUp")
             else:
                 user=User.objects.create_user(username=username, first_name=first_name, last_name=last_name,email=email, password=password1)
                 user.save()
                 return HttpResponseRedirect("/")
         else:
             messages.error(request, "Password Not Matched !!")
-            return HttpResponseRedirect("/register")
-    return render(request, "Pages/signUP.html")
+            return redirect("CSM:SignUp")
+    return render(request, "CSM/signUP.html")
+
 
 def signMeOut(request):
     auth.logout(request)
     return HttpResponseRedirect("/")
 
 
-
+@login_required
 def home(request):
-    return render(request, "Pages/home.html")
+        return render(request, "CSM/home.html")
+
+
+def profile(request, user_profile):
+    # Using get_object_or_404 to raise a 404 if the user doesn't exist
+    userp = get_object_or_404(User, username=user_profile)
+    return render(request, "CSM/profile.html", {'userprofile': userp})
