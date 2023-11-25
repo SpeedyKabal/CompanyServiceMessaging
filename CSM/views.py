@@ -7,10 +7,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import auth
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from .decorators import unauthenticated_user, authenticated_user
+from .models import Employee
 
 # Create your views here.
 
-
+@unauthenticated_user
 def index(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -28,7 +30,7 @@ def index(request):
     return render(request, "CSM/index.html")
 
 
-
+@unauthenticated_user
 def signMeUp(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -55,17 +57,20 @@ def signMeUp(request):
     return render(request, "CSM/signUP.html")
 
 
+
 def signMeOut(request):
     auth.logout(request)
     return HttpResponseRedirect("/")
 
 
-@login_required
+
+@authenticated_user
 def home(request):
         return render(request, "CSM/home.html")
 
 
 def profile(request, user_profile):
     # Using get_object_or_404 to raise a 404 if the user doesn't exist
-    userp = get_object_or_404(User, username=user_profile)
-    return render(request, "CSM/profile.html", {'userprofile': userp})
+    userp = get_object_or_404(Employee, user__username = user_profile)
+    return render(request, "CSM/profile.html", {
+        'userprofile': userp})

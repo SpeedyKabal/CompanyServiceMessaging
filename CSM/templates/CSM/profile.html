@@ -1,7 +1,7 @@
 {% extends "CSM/base.html" %}
 
 {% block title %}
-    {{ userprofile.first_name }} Profile
+    {{ userprofile.user.username }} Profile
 {% endblock  %}
 
 {% block css %}     
@@ -32,7 +32,7 @@
                 class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
                 <div class="p-4 flex flex-row items-center justify-between">
                     <a href="#"
-                        class="text-lg font-semibold tracking-widest uppercase rounded-lg focus:outline-none focus:shadow-outline">{{ userprofile.first_name }} Profile</a>
+                        class="text-lg font-semibold tracking-widest uppercase rounded-lg focus:outline-none focus:shadow-outline">{{ userprofile.user.first_name }} Profile</a>
                     <button class="md:hidden rounded-lg focus:outline-none focus:shadow-outline" @click="open = !open">
                         <svg fill="currentColor" viewBox="0 0 20 20" class="w-6 h-6">
                             <path x-show="!open" fill-rule="evenodd"
@@ -49,9 +49,9 @@
                     <div @click.away="open = false" class="relative" x-data="{ open: false }">
                         <button @click="open = !open"
                             class="flex flex-row items-center space-x-2 w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent hover:bg-blue-800 md:w-auto md:inline md:mt-0 md:ml-4 hover:bg-gray-200 focus:bg-blue-800 focus:outline-none focus:shadow-outline">
-                            <span>{{ userprofile.username }} </span>
+                            <span>{{ userprofile.user.username }} </span>
                             <img class="inline h-6 rounded-full"
-                                src="https://avatars2.githubusercontent.com/u/24622175?s=60&amp;v=4">
+                                src="{{ request.user.employee.profile_pic.url}}">
                             <svg fill="currentColor" viewBox="0 0 20 20" :class="{'rotate-180': open, 'rotate-0': !open}"
                                 class="inline w-4 h-4 transition-transform duration-200 transform">
                                 <path fill-rule="evenodd"
@@ -93,17 +93,15 @@
                                 src="https://lavinephotography.com.au/wp-content/uploads/2017/01/PROFILE-Photography-112.jpg"
                                 alt="">
                         </div>
-                        <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ userprofile.first_name }} {{ userprofile.last_name }} </h1>
-                        <h3 class="text-gray-600 font-lg text-semibold leading-6">Owner at Her Company Inc.</h3>
-                        <p class="text-sm text-gray-500 hover:text-gray-600 leading-6">Lorem ipsum dolor sit amet
-                            consectetur adipisicing elit.
-                            Reprehenderit, eligendi dolorum sequi illum qui unde aspernatur non deserunt</p>
+                        <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ userprofile}} </h1>
+                        <h3 class="text-gray-600 font-lg text-semibold leading-6">{{ userprofile.position }}</h3>
+                        <p class="text-sm text-gray-500 hover:text-gray-600 leading-6" dir='rtl'>{{ userprofile.ar_position }}</p>
                         <ul
                             class="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
                             <li class="flex items-center py-3">
                                 <span>Status</span>
                                 <span class="ml-auto">
-                                        {% if userprofile.is_authenticated %}
+                                        {% if userprofile.user.is_authenticated %}
                                             <span
                                         class="bg-green-500 py-1 px-2 rounded text-white text-sm">Active</span>
                                         {% else %}
@@ -115,7 +113,7 @@
                             </li>
                             <li class="flex items-center py-3">
                                 <span>Member since</span>
-                                <span class="ml-auto">{{ userprofile.date_joined }}</span>
+                                <span class="ml-auto">{{ userprofile.user.date_joined }}</span>
                             </li>
                         </ul>
                     </div>
@@ -139,37 +137,37 @@
                             <div class="grid md:grid-cols-2 text-sm">
                                 <div class="grid grid-cols-2">
                                     <div class="px-4 py-2 font-semibold">First Name</div>
-                                    <div class="px-4 py-2">{{ userprofile.first_name }}</div>
+                                    <div class="px-4 py-2">{{ userprofile.user.first_name }}</div>
                                 </div>
                                 <div class="grid grid-cols-2">
                                     <div class="px-4 py-2 font-semibold">Last Name</div>
-                                    <div class="px-4 py-2">{{ userprofile.last_name }}</div>
+                                    <div class="px-4 py-2">{{ userprofile.user.last_name }}</div>
                                 </div>
                                 <div class="grid grid-cols-2">
                                     <div class="px-4 py-2 font-semibold">Gender</div>
-                                    <div class="px-4 py-2">Male</div>
+                                    <div class="px-4 py-2">{{ userprofile.gender }}</div>
                                 </div>
                                 <div class="grid grid-cols-2">
-                                    <div class="px-4 py-2 font-semibold">Contact No.</div>
-                                    <div class="px-4 py-2">+11 998001001</div>
+                                    <div class="px-4 py-2 font-semibold">Phone No.</div>
+                                    <div class="px-4 py-2">{{ userprofile.phone}}</div>
                                 </div>
                                 <div class="grid grid-cols-2">
-                                    <div class="px-4 py-2 font-semibold">Current Address</div>
-                                    <div class="px-4 py-2">Beech Creek, PA, Pennsylvania</div>
+                                    <div class="px-4 py-2 font-semibold">Address</div>
+                                    <div class="px-4 py-2">{{ userprofile.adress }}</div>
                                 </div>
                                 <div class="grid grid-cols-2">
-                                    <div class="px-4 py-2 font-semibold">Permanant Address</div>
-                                    <div class="px-4 py-2">Arlington Heights, IL, Illinois</div>
+                                    <div class="px-4 py-2 font-semibold">Position</div>
+                                    <div class="px-4 py-2">{{ userprofile.position}}</div>
                                 </div>
                                 <div class="grid grid-cols-2">
                                     <div class="px-4 py-2 font-semibold">Email</div>
                                     <div class="px-4 py-2">
-                                        <a class="text-blue-800" href="mailto:jane@example.com">{{ userprofile.email }}</a>
+                                        <a class="text-blue-800" href="mailto:jane@example.com">{{ userprofile.user.email }}</a>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2">
                                     <div class="px-4 py-2 font-semibold">Birthday</div>
-                                    <div class="px-4 py-2">30/09/1991</div>
+                                    <div class="px-4 py-2">{{ userprofile.birthday }}</div>
                                 </div>
                             </div>
                         </div>
