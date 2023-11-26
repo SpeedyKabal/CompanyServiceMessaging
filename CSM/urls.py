@@ -9,5 +9,4 @@ urlpatterns = [
     path("home/", views.home, name="home"),
     path("Logout/", views.signMeOut, name="SignOut"),
     path("<str:user_profile>/", views.profile, name="Profile")
-    path("<str:user_profile>/updatepofile", views.updateProfile, name="updateProfile")
 ]

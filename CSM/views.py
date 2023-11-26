@@ -74,8 +74,3 @@ def profile(request, user_profile):
     userp = get_object_or_404(Employee, user__username = user_profile)
     return render(request, "CSM/profile.html", {
         'userprofile': userp})
-
-
-def updateProfile(request):
-    context = {}
-    return render(request, "CSM/updateProfile.html", context)
