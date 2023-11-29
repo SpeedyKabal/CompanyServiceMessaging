@@ -1,14 +1,11 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.template.loader import render_to_string
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import auth
 from django.http.response import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, authenticated_user
 from .models import Employee
+from .forms import EmployeeForm, UserForm
 
 # Create your views here.
 
@@ -57,11 +54,10 @@ def signMeUp(request):
     return render(request, "CSM/signUP.html")
 
 
-
+@authenticated_user
 def signMeOut(request):
     auth.logout(request)
     return HttpResponseRedirect("/")
-
 
 
 @authenticated_user
@@ -69,8 +65,32 @@ def home(request):
         return render(request, "CSM/home.html")
 
 
-def profile(request, user_profile):
+def profile(request, profile_user):
     # Using get_object_or_404 to raise a 404 if the user doesn't exist
-    userp = get_object_or_404(Employee, user__username = user_profile)
+    userp = get_object_or_404(Employee, user__username = profile_user)
     return render(request, "CSM/profile.html", {
         'userprofile': userp})
+
+
+def settings(request):
+    user_profile = Employee.objects.get(user=request.user)
+    user_profile1 = User.objects.get(username=request.user)
+
+    employee = EmployeeForm(request.POST, instance=user_profile)
+    worker = UserForm(request.POST, instance=user_profile1)
+
+    if request.method == 'POST':
+        employee = EmployeeForm(request.POST, instance=user_profile)
+        worker = UserForm(request.POST, instance=user_profile1)
+        if employee.is_valid() and worker.is_valid():
+            employee.save()
+            worker.save()
+            return redirect("CSM:Profile", profile_user = worker.cleaned_data['username'])
+        else:
+            employee = EmployeeForm(instance = user_profile)
+            worker = UserForm(request.POST, instance=user_profile1)
+    return render(request, "CSM/Settings.html", { 'form' : employee,
+                                                 'user': worker } )
+
+def sendMessage(request):
+    return render(request, "CSM/send_message.html")

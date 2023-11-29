@@ -26,8 +26,11 @@ class Employee(models.Model):
     position = models.CharField(max_length=40, null=True, choices=POSITION)
     ar_position = models.CharField(max_length=40, null=True, choices=ARPOSITION)
     birthday = models.DateField(null=True)
-    profile_pic = models.ImageField(null=True,blank=True)
+    profile_pic = models.ImageField(null=True,blank=True, default='profile_pic.png')
+
 
     def __str__(self):
-        return self.user.first_name + " " + self.user.last_name
+        return self.user.username 
+
+
 

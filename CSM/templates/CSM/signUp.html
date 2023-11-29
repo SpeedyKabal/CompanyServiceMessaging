@@ -1,4 +1,4 @@
-{% extends "CSM/base.html" %} 
+{% extends "CSM/include/base.html" %} 
 
 
 {% block title %} Sign Up To CSM {% endblock %}
@@ -102,17 +102,17 @@
 
 
 
+    {% block scripts %}
+            <script>
+                var form_fields = document.getElementsByTagName('input')
+                form_fields[0].placeholder="Type Username";
+                form_fields[1].placeholder="Type First Name";
 
-        <!--
-        <script>
-            var form_fields = document.getElementsByTagName('input')
-            form_fields[0].placeholder="Type Username";
-            form_fields[1].placeholder="Type First Name";
-
-            for (var field in form_fields){
-                form_fields[field].className += 'form-control';
-                console.log(field);
-            }
-        </script>-->
+                for (var field in form_fields){
+                    form_fields[field].className += 'form-control';
+                    console.log(field);
+                }
+            </script>
+    {% endblock  %}
 
 {% endblock %}

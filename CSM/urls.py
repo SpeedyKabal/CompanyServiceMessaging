@@ -8,5 +8,7 @@ urlpatterns = [
     path("register/", views.signMeUp, name="SignUp"),
     path("home/", views.home, name="home"),
     path("Logout/", views.signMeOut, name="SignOut"),
-    path("<str:user_profile>/", views.profile, name="Profile")
+    path("settings/", views.settings, name="Setting"),
+    path("send_message/", views.sendMessage, name="Send_Message"),
+    path("<str:profile_user>/", views.profile, name="Profile"),
 ]
