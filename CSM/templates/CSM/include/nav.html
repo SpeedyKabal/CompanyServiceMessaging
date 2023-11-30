@@ -158,7 +158,7 @@
         <a
           class="hidden-arrow mr flex items-center text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400 motion-reduce:transition-none"
           href="#"
-          id="dropdownMenuButton1"
+          id="DownArrow"
           role="button"
           data-te-dropdown-toggle-ref
           aria-expanded="false"
@@ -179,9 +179,10 @@
         </a>
         <!-- Dropdown menu -->
         <ul
-          class="absolute z-[1000] float-left hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
+          class="absolute right-[15px] top-[45px] z-[1000] float-left hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700"
           aria-labelledby="dropdownMenuButton1"
           data-te-dropdown-menu-ref
+          id="ul_nav"
         >
           <!-- Dropdown menu items -->
           <li>
@@ -189,7 +190,7 @@
               class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
               href="#"
               data-te-dropdown-item-ref
-              >Some news</a
+              >Setting</a
             >
           </li>
           <li>
@@ -197,15 +198,7 @@
               class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
               href="#"
               data-te-dropdown-item-ref
-              >Another news</a
-            >
-          </li>
-          <li>
-            <a
-              class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-              href="#"
-              data-te-dropdown-item-ref
-              >Something else here</a
+              >Logout</a
             >
           </li>
         </ul>
