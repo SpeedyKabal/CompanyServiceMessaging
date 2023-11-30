@@ -67,10 +67,12 @@ def home(request):
 
 
 def profile(request, profile_user):
+    employee = Employee.objects.get(user = request.user)
     # Using get_object_or_404 to raise a 404 if the user doesn't exist
     userp = get_object_or_404(Employee, user__username = profile_user)
     return render(request, "CSM/profile.html", {
-        'userprofile': userp})
+        'userprofile': userp ,
+        'employee' : employee})
 
 
 def settings(request):
