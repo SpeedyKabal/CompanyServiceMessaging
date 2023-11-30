@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Employee(models.Model):
@@ -31,6 +32,14 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.user.username 
+
+
+class Messages(models.Model):
+    sender = models.ForeignKey(User, null=True,related_name='sent_messages', on_delete=models.SET_NULL)
+    message = models.TextField(max_length=256, null=False, blank=False)
+    reciever = models.ForeignKey(User, null=True, related_name='recieve_messages', on_delete=models.SET_NULL)
+    date_created = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)
 
 
 
