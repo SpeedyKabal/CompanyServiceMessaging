@@ -62,7 +62,8 @@ def signMeOut(request):
 
 @authenticated_user
 def home(request):
-        return render(request, "CSM/home.html")
+        employee = Employee.objects.get(user = request.user)
+        return render(request, "CSM/home.html", {'employee' : employee})
 
 
 def profile(request, profile_user):
