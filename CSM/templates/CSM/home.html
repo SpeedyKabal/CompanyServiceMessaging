@@ -14,14 +14,14 @@
                             <a href="#" class="w-full px-2 py-2 mx-2 my-2 border-2 border-slate-500 border-solid rounded-lg flex flex-row bg-red-400 ">
                                 <span >{{ message.sender.first_name }} {{ message.sender.last_name }} </span>
                                 <span>|  |</span>
-                                <span>{{ message.message }}</span>
+                                <span dir="{% if message.id in ar_messages_ids%}rtl{% else %}ltr{% endif %}">{{ message.message }}</span>
                             </a>
 
                         {% else %}
                             <a href="#" class="w-full px-2 py-2 mx-2 my-2 border-2 border-slate-500 border-solid rounded-lg flex flex-row " >
                                 <span >{{ message.sender.first_name }} {{ message.sender.last_name }} </span>
                                 <span>|  |</span>
-                                <span >{{ message.message }}</span>
+                                <span dir="{% if message.id in ar_messages_ids%}rtl{% else %}ltr{% endif %}">{{ message.message }}</span>
                             </a>
                         {% endif %}
                     {% endfor %}                    

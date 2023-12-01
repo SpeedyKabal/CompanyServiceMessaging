@@ -6,7 +6,7 @@ from django.http.response import HttpResponseRedirect
 from .decorators import unauthenticated_user, authenticated_user
 from .models import Employee, Messages
 from .forms import EmployeeForm, UserForm
-from django.http import JsonResponse
+import re
 
 # Create your views here.
 
@@ -65,12 +65,17 @@ def signMeOut(request):
 def home(request):
     employee = Employee.objects.get(user = request.user)
     try:
-        messages = Messages.objects.filter(reciever = request.user)
+        allMessages = Messages.objects.filter(reciever = request.user)
+        ar_messages_ids = []
+        for message in allMessages:
+            if re.search(r'[\u0600-\u06FF]', message.message):
+                ar_messages_ids.append(message.id)
+
         unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
     except Messages.DoesNotExist:
-        messages = 0
+        allMessages = 0
         unread_messages = 0
-    return render(request, "CSM/home.html", {'employee' : employee, 'messages' : messages, 'unreaded' : unread_messages})
+    return render(request, "CSM/home.html", {'employee' : employee, 'messages' : allMessages, 'unreaded' : unread_messages, 'ar_messages_ids':ar_messages_ids})
 
 
 def profile(request, profile_user):
