@@ -6,17 +6,22 @@
 
 {% block content %}
     {% include "CSM/include/nav.html" %}
-        <section class="flex-1">
+        <section class="flex-1 my-3">
             <div class="container">
                 {% if messages  != 0 %}
                     {% for message in messages %}
                         {% if message.id in unreaded %}
-                            <a>
-                                <span class="text-red-500">{{ message.message }}</span>
-                            </a>
-                        {% else %}
-                            <a>
+                            <a href="#" class="w-full px-2 py-2 mx-2 my-2 border-2 border-slate-500 border-solid rounded-lg flex flex-row bg-red-400 ">
+                                <span >{{ message.sender.first_name }} {{ message.sender.last_name }} </span>
+                                <span>|  |</span>
                                 <span>{{ message.message }}</span>
+                            </a>
+
+                        {% else %}
+                            <a href="#" class="w-full px-2 py-2 mx-2 my-2 border-2 border-slate-500 border-solid rounded-lg flex flex-row " >
+                                <span >{{ message.sender.first_name }} {{ message.sender.last_name }} </span>
+                                <span>|  |</span>
+                                <span >{{ message.message }}</span>
                             </a>
                         {% endif %}
                     {% endfor %}                    

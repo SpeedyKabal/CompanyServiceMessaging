@@ -29,11 +29,11 @@ class MessagesAdmin(admin.ModelAdmin):
     list_display = ['get_sender','get_message','get_reciever', 'date_created' ,'is_read']
 
     def get_sender(self, obj):
-        return obj.sender.last_name
+        return f"{obj.sender.first_name} {obj.sender.last_name}"
     
 
     def get_reciever(self, obj):
-        return obj.reciever.last_name
+        return f"{obj.reciever.first_name} {obj.reciever.last_name}"
     
     def get_message(self, obj):
         words = obj.message.split()
