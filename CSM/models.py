@@ -29,9 +29,11 @@ class Employee(models.Model):
     birthday = models.DateField(null=True)
     profile_pic = models.ImageField(null=True,blank=True, default='profile_pic.png')
 
+    def full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
     def __str__(self):
-        return self.user.username 
+        return self.full_name() 
 
 
 class Messages(models.Model):
