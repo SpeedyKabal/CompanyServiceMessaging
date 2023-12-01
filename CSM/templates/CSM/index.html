@@ -11,7 +11,7 @@
       <h1 class="font-bold text-center text-2xl mb-5">Company Service Messaging</h1>  
       <div class="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
         <form action="" method="POST" autocomplete="on">
-          {% csrf_token%}
+          {% csrf_token %}
           <div class="px-5 py-7">
             {% for message in messages %}
               <p class="text-gray-700">{{ message }}</p>

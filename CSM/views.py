@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.http.response import HttpResponseRedirect
 from .decorators import unauthenticated_user, authenticated_user
-from .models import Employee
+from .models import Employee, Messages
 from .forms import EmployeeForm, UserForm
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -63,7 +64,13 @@ def signMeOut(request):
 @authenticated_user
 def home(request):
     employee = Employee.objects.get(user = request.user)
-    return render(request, "CSM/home.html", {'employee' : employee})
+    try:
+        messages = Messages.objects.filter(reciever = request.user)
+        unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
+    except Messages.DoesNotExist:
+        messages = 0
+        unread_messages = 0
+    return render(request, "CSM/home.html", {'employee' : employee, 'messages' : messages, 'unreaded' : unread_messages})
 
 
 def profile(request, profile_user):
@@ -96,4 +103,13 @@ def settings(request):
                                                  'user': worker } )
 
 def sendMessage(request):
-    return render(request, "CSM/send_message.html")
+    recievers = User.objects.exclude(username=request.user).values('username','first_name','last_name')
+    if request.method == "POST":
+        sender = request.user
+        reciever_username = request.POST['user_option']
+        reciever = get_object_or_404(User, username=reciever_username)
+        message = request.POST['user_message']
+        sent_message = Messages.objects.create(sender=sender, reciever=reciever, message=message)
+        sent_message.save()
+        return redirect("CSM:home")
+    return render(request, "CSM/send_message.html", {'users':recievers})

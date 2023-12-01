@@ -16,16 +16,16 @@
   </head>
   <body>
     {% block content %} Here is the Body of The Page {% endblock %}
-    <script>
-      {% block scripts %}
+    
+    
+    {% block scripts %}
       
-      {% endblock  %}
-    </script>
+    {% endblock  %}
+
     <script
       src="{% static 'tw-elements/dist/js/tw-elements.umd.min.js' %}"
       type="text/javascript">
     </script>
-    <script src="{% static 'js/scripts.js'%}"></script>
   </body>
 
 

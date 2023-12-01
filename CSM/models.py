@@ -40,8 +40,11 @@ class Messages(models.Model):
     sender = models.ForeignKey(User, null=True,related_name='sent_messages', on_delete=models.SET_NULL)
     message = models.TextField(max_length=256, null=False, blank=False)
     reciever = models.ForeignKey(User, null=True, related_name='recieve_messages', on_delete=models.SET_NULL)
-    date_created = models.DateTimeField(default=timezone.now)
+    date_created = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.sender.first_name
 
 
 

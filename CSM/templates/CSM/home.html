@@ -6,7 +6,23 @@
 
 {% block content %}
     {% include "CSM/include/nav.html" %}
-        <section class="flex-1"></section>
+        <section class="flex-1">
+            <div class="container">
+                {% if messages  != 0 %}
+                    {% for message in messages %}
+                        {% if message.id in unreaded %}
+                            <a>
+                                <span class="text-red-500">{{ message.message }}</span>
+                            </a>
+                        {% else %}
+                            <a>
+                                <span>{{ message.message }}</span>
+                            </a>
+                        {% endif %}
+                    {% endfor %}                    
+                {% endif %}
+            </div>
+        </section>
     {% include "CSM/include/footer.html" %}
 {% endblock  %}
 

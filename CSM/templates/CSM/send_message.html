@@ -6,189 +6,46 @@
 
 {% block content %}
     {% include "CSM/include/nav.html" %}
-        <form id="tooltips" class="mr-10 flex-1" data-te-active-validation="true">
-            <div
-                class="relative mb-3"
-                data-te-input-wrapper-init
-                data-te-validate="input"
-                data-te-validation-ruleset="isRequired|isLongerThan(4)">
-                <input
-                type="text"
-                class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                name="name" />
-                <label
-                class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                >Full name
-                </label>
-                <span
-                class="absolute -right-8 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-500 dark:text-neutral-200 [&>svg]:h-5 [&>svg]:w-5"
-                id="fullNameInfo">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="h-6 w-6">
-                    <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                </svg>
-                </span>
-            </div>
-            <div
-                class="relative mb-3"
-                data-te-input-wrapper-init
-                data-te-validate="input"
-                data-te-validation-ruleset="isRequired|isEmail">
-                <input
-                type="text"
-                class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                name="email" />
-                <label
-                class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                >Email address
-                </label>
-                <span
-                class="absolute -right-8 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-500 dark:text-neutral-200 [&>svg]:h-5 [&>svg]:w-5"
-                id="emailInfo">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="h-6 w-6">
-                    <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                </svg>
-                </span>
-            </div>
-            <div
-                class="relative mb-4 flex items-stretch"
-                data-te-input-wrapper-init
-                data-te-validate="input"
-                data-te-validation-ruleset="isRequired|isLongerThan(10)">
-                <textarea
-                class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-                rows="3"
-                name="issue"></textarea>
-                <label
-                class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-                >Describe your issue</label
-                >
-                <span
-                class="absolute -right-8 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-500 dark:text-neutral-200 [&>svg]:h-5 [&>svg]:w-5"
-                id="issueInfo">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="h-6 w-6">
-                    <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                </svg>
-                </span>
-            </div>
-            <button
-                type="button"
-                class="mt-2 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                data-te-submit-btn-ref>
-                Validate
-            </button>
-        </form>
+  <div
+    class="flex-1 block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+    <form method="POST">
+      {% csrf_token %}
+
+      <!--Name input-->
+      <div class="relative mb-6" data-te-input-wrapper-init>
+        <label class="block">
+          <label for="Employees" class="block text-sm font-medium text-slate-700">Send Message To</label>
+          <select id="Employees" name="user_option" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300">
+
+            {% for user in users %}
+              <option value="{{user.username}}" >{{user.first_name}} {{user.last_name}}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <!--Message textarea-->
+      <div class="relative mb-6" data-te-input-wrapper-init>
+        <label class="block">
+          <span class="block text-sm font-medium text-slate-700">Message Content</span>
+          <textarea type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="user_message" placeholder="Type Your Message Here"></textarea>
+          <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+            Please provide a valid Message.
+          </p>
+        </label>
+      </div>
+
+      <!--Submit button-->
+      <button
+        type="submit"
+        class="w-full border-2 border-green-100 border-solid px-2 py-2 text-slate-300 bg-blue-500 rounded-lg">
+        Send
+      </button>
+    </form>
+  </div>
+       
     {% include "CSM/include/footer.html" %}
 
 {% endblock  %}
 
-    {% block scripts %}
-
-    
-    const tooltipsForm = document.getElementById("tooltips");
-
-    const tooltipsInfo = [
-    {
-        element: document.getElementById("fullNameInfo"),
-        name: "name",
-        message: {
-            isRequired: "This value is required",
-            isLongerThan: "Must be longer than 4 characters",
-        },
-    },
-    {
-        element: document.getElementById("emailInfo"),
-        name: "email",
-        message: {
-            isRequired: "This value is required",
-            isEmail: "Must be a valid email address",
-    },
-  },
-  {
-        element: document.getElementById("issueInfo"),
-        name: "issue",
-        message: {
-            isRequired: "This value is required",
-            isLongerThan: "Must be longer than 10 characters",
-    },
-  },
-];
-
-const generateMessage = (result, message) =>
-  `<p class="${result ? 'text-[#14a44d]' : 'text-[#dc4c64]'}">${message}</p>`;
-
-tooltipsInfo.forEach((tooltip) => {
-  const title = Object.entries(tooltip.message)
-    .map(([key, value]) => generateMessage(false, value))
-    .join("");
-
-  tooltip.instance = new te.Tooltip(tooltip.element, {
-    html: true,
-    template: `
-      <div>
-        <div class="tooltip-inner bg-white text-xs p-4 ml-4 rounded border dark:bg-neutral-800 dark:border-neutral-400"></div>
-      </div>
-    `,
-    placement: "right",
-    title,
-  });
-});
-
-const tooltipsValidation = new te.Validation(tooltipsForm);
-
-tooltipsForm.addEventListener("changed.te.validation", (e) => {
-  const element = tooltipsInfo.find(
-    (tooltip) => tooltip.name === e.value.name
-  );
-  element.instance.dispose();
-
-  const title = Object.entries(element.message)
-    .map(([key, value]) => {
-      const result = e.value.validation.find(
-        (res) => key === res.name
-      ).result;
-      return generateMessage(result, value);
-    })
-    .join("");
-
-  const borderColor =
-    e.value.result === "valid" ? "border-[#14a44d]" : "border-[#dc4c64]";
-
-  element.instance = new te.Tooltip(element.element, {
-    html: true,
-    template: `
-      <div>
-        <div class="tooltip-inner bg-white text-xs p-4 ml-4 rounded border ${borderColor} dark:bg-neutral-800"></div>
-      </div>
-    `,
-    placement: "right",
-    title: title,
-  });
-});
-    {% endblock  %}
+{% block scripts %}
+{% endblock %}
