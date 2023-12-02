@@ -65,7 +65,7 @@ def signMeOut(request):
 def home(request):
     employee = Employee.objects.get(user = request.user) #This Used to show Profile of the User in Navbar
     try:
-        allMessages = Messages.objects.filter(reciever = request.user)
+        allMessages = Messages.objects.filter(reciever = request.user).select_related('sender__employee')
         arabic_messages_ids = []
         for message in allMessages:
             if re.search(r'[\u0600-\u06FF]', message.message):
@@ -76,7 +76,14 @@ def home(request):
         allMessages = 0
         unread_messages = 0
 
-    return render(request, "CSM/home.html", {'employee' : employee, 'messages' : allMessages, 'unreaded' : unread_messages, 'ar_messages_ids':arabic_messages_ids})
+    context = {
+        'employee' : employee,
+        'messages' : allMessages,
+        'unreaded' : unread_messages,
+        'ar_messages_ids':arabic_messages_ids,
+        'users_pic' : employee_pic
+    }
+    return render(request, "CSM/home.html", context)
 
 
 def profile(request, profile_user):

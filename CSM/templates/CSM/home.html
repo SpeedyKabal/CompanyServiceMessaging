@@ -16,7 +16,7 @@
                                 <a class="bg-red-200 rounded-l-lg text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" id="{{message.reciever}}{{message.id}}">
                                     <!-- Image of The Sender -->
                                     <div class="flex flex-col items-center justify-center mx-2">
-                                        <img src="{{employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
+                                        <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
                                     <!-- First Name and Last of The Sender -->
                                     <div class="flex flex-col items-center justify-center px-2 mx-2">
@@ -28,7 +28,7 @@
                                 <a class="bg-green-100 rounded-l-lg text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" id="{{message.reciever}}{{message.id}}">
                                     <!-- Image of The Sender -->
                                     <div class="flex flex-col items-center justify-center mx-2">
-                                        <img src="{{employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
+                                        <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
                                     <!-- First Name and Last of The Sender -->
                                     <div class="flex flex-col items-center justify-center px-2 mx-2">
@@ -80,10 +80,6 @@
 
             })
         });
-
-
-    
-
     </script>
 {% endblock %}
 
