@@ -9,7 +9,7 @@
         <section class="flex justify-center">
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
-                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth">
+                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth">
                     {% if messages  != 0 %}
                         {% for message in messages %}
                             {% if message.id in unreaded %} 

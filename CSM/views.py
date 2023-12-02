@@ -94,6 +94,7 @@ def profile(request, profile_user):
         'employee' : employee})
 
 
+@authenticated_user
 def settings(request):
     user_profile = Employee.objects.get(user=request.user)
     user_profile1 = User.objects.get(username=request.user)
@@ -114,7 +115,10 @@ def settings(request):
     return render(request, "CSM/Settings.html", { 'form' : employee,
                                                  'user': worker } )
 
+
+@authenticated_user
 def sendMessage(request):
+    employee = Employee.objects.get(user = request.user)
     recievers = User.objects.exclude(username=request.user).values('username','first_name','last_name')
     if request.method == "POST":
         sender = request.user
@@ -124,4 +128,8 @@ def sendMessage(request):
         sent_message = Messages.objects.create(sender=sender, reciever=reciever, message=message)
         sent_message.save()
         return redirect("CSM:home")
-    return render(request, "CSM/send_message.html", {'users':recievers})
+    context = {
+        'users':recievers ,
+        'employee':employee
+    }
+    return render(request, "CSM/send_message.html", context)
