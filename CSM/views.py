@@ -81,7 +81,6 @@ def home(request):
         'messages' : allMessages,
         'unreaded' : unread_messages,
         'ar_messages_ids':arabic_messages_ids,
-        'users_pic' : employee_pic
     }
     return render(request, "CSM/home.html", context)
 
