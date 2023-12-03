@@ -38,6 +38,7 @@ class Employee(models.Model):
 
 class Messages(models.Model):
     sender = models.ForeignKey(User, null=True,related_name='sent_messages', on_delete=models.SET_NULL)
+    title = models.CharField(max_length=64, null=True, blank=True)
     message = models.TextField(max_length=256, null=False, blank=False)
     reciever = models.ForeignKey(User, null=True, related_name='recieve_messages', on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True)

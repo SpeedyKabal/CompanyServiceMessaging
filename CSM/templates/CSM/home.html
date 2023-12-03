@@ -44,17 +44,21 @@
                 <div class="w-[80%] min-h-[26rem] max-h-[27rem] flex flex-col">
                     <!-- Title of The Message -->
                     <div class="flex justify-center w-full h-[10%] border-b-2 border-solid border-slate-400 px-2 mx-2 bg-blue-200">
-                        <span class="px-2 mx-2 text-red-500">The is The Title The Message</span>
+                        {% for message in messages %}
+                            <span class="px-2 mx-2 text-red-500 message-title hidden" id="{{message.reciever}}{{message.id}}">{{message.title}}</span>
+                        {% endfor %}
                     </div>
                     <!-- The Message -->
                     <div class="w-full px-2 py-2 mx-2 h-[80%]">
                         {% for message in messages %}
-                        <p class="message-visible hidden" id="{{message.reciever}}{{message.id}}" dir="{% if message.id in ar_messages_ids%}rtl{% else %}ltr{% endif%}">{{ message.message}}</p>
+                            <p class="message-content hidden" id="{{message.reciever}}{{message.id}}" dir="{% if message.id in ar_messages_ids%}rtl{% else %}ltr{% endif%}">{{ message.message}}</p>
                         {% endfor %}
                     </div>
                     <!-- Information About the Message -->
                     <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-blue-200">
-                        <span class="text-red-500">2023/12/02 14:44</span>
+                        {% for message in messages %}
+                            <span class="text-red-500 message-date hidden" id="{{message.reciever}}{{message.id}}">{{message.date_created}}</span>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -65,8 +69,10 @@
 
 {% block scripts %}
     <script>
-        allMessages = document.querySelectorAll('.message-visible');
+        allMessages = document.querySelectorAll('.message-content');
         allUser = document.querySelectorAll('.user');
+        allTitls = document.querySelectorAll('.message-title');
+        allDates = document.querySelectorAll('.message-date');
 
         allUser.forEach(function (userElement) {
             userElement.addEventListener('click', function () {
@@ -75,6 +81,30 @@
                         messageElement.classList.remove('hidden')
                     }else{
                         messageElement.classList.add('hidden')
+                    }
+                })
+
+            })
+        });
+        allUser.forEach(function (userElement) {
+            userElement.addEventListener('click', function () {
+                allDates.forEach(function (dateElement) {
+                    if(userElement.id == dateElement.id){
+                        dateElement.classList.remove('hidden')
+                    }else{
+                        dateElement.classList.add('hidden')
+                    }
+                })
+
+            })
+        });
+        allUser.forEach(function (userElement) {
+            userElement.addEventListener('click', function () {
+                allTitls.forEach(function (titleElement) {
+                    if(userElement.id == titleElement.id){
+                        titleElement.classList.remove('hidden')
+                    }else{
+                        titleElement.classList.add('hidden')
                     }
                 })
 

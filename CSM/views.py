@@ -85,6 +85,7 @@ def home(request):
     return render(request, "CSM/home.html", context)
 
 
+@authenticated_user
 def profile(request, profile_user):
     employee = Employee.objects.get(user = request.user)
     # Using get_object_or_404 to raise a 404 if the user doesn't exist
