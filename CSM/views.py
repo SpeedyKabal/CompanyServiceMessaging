@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
+from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib import auth
@@ -6,6 +7,7 @@ from django.http.response import HttpResponseRedirect
 from .decorators import unauthenticated_user, authenticated_user
 from .models import Employee, Messages
 from .forms import EmployeeForm, UserForm
+from django.utils import timezone
 import re
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -138,7 +140,8 @@ def sendMessage(request):
         reciever_username = request.POST['user_option']
         reciever = get_object_or_404(User, username=reciever_username)
         message = request.POST['user_message']
-        sent_message = Messages.objects.create(sender=sender, reciever=reciever, message=message)
+        messageTitle = request.POST['message_title']
+        sent_message = Messages.objects.create(sender=sender, reciever=reciever, message=message, title=messageTitle)
         sent_message.save()
         return redirect("CSM:home")
     context = {
@@ -177,6 +180,19 @@ def markItRead(request):
         return JsonResponse(context)
     else:
         return JsonResponse({'error':'Invalid request'})
+
+
+def fetch_new_messages(request):
+    employeeId = request.GET.get('employeeId') #The Id of The Sender
+    dateTime = request.GET.get('date_message') #The datetime to look on database of new messages that has date_created greater than this
+    if employeeId is not None and dateTime is not None:
+        lastCheck = timezone.datetime.fromisoformat(dateTime)
+        new_messages = Messages.objects.filter(reciever_id = employeeId, date_created__gt = lastCheck, is_read = False)
+        newMessageHtml = render_to_string('CSM/newUserHtml.html', {'messages': new_messages})
+        return JsonResponse({'latestMessage' : newMessageHtml })
+    else:
+        return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})
+    
 
 
 def test(request):

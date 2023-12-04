@@ -9,7 +9,7 @@
         <section class="flex justify-center">
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
-                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth">
+                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth sender-container">
                     {% if messages  != 0 %}
                         {% for message in messages %}
                             {% if message.id in unreaded %}
@@ -20,8 +20,8 @@
                                     <div class="flex flex-col items-center justify-center mx-2">
                                         <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
-                                    <!-- First Name and Last of The Sender -->
-                                    <div class="flex flex-col items-center justify-center px-2 mx-2">
+                                    <!-- First Name and Last Name of The Sender -->
+                                    <div class="flex flex-col justify-center px-2 mx-2">
                                         <span class="text-base min-w-[6rem]">{{ message.sender.first_name }}</span>
                                         <span class="text-base min-w-[6rem]">{{ message.sender.last_name }}</span>
                                     </div>
@@ -34,8 +34,8 @@
                                     <div class="flex flex-col items-center justify-center mx-2">
                                         <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
-                                    <!-- First Name and Last of The Sender -->
-                                    <div class="flex flex-col items-center justify-center px-2 mx-2">
+                                    <!-- First Name and Last Name of The Sender -->
+                                    <div class="flex flex-col justify-center px-2 mx-2">
                                         <span class="text-base min-w-[6rem]">{{ message.sender.first_name }}</span>
                                         <span class="text-base min-w-[6rem]">{{ message.sender.last_name }}</span>
                                     </div>
@@ -76,20 +76,20 @@
     <script>
         $(document).ready(function () {
             function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+                var cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
-            $('.user').click(function (e) {
+            $(document).on('click', '.user',function (e){ 
                 e.preventDefault();
                 var messageId = $(this).data('message-id');
                 var csrfToken = getCookie('csrftoken');
@@ -113,6 +113,25 @@
                 $(this).removeClass("bg-red-200");
                 $(this).addClass("bg-green-100");
             });
+            var lastCheckTime = new Date().toISOString();
+            
+            function fetchNewMessages(){
+                var employeeId = {{ request.user.id }}
+                $.ajax({
+                    type    :"GET",
+                    url     : "{% url 'CSM:newMessages' %}",
+                    data    : {'employeeId' : employeeId,
+                               'date_message' :  lastCheckTime },
+                    success : function (data){
+                        $('.sender-container').append(data.latestMessage);
+                        lastCheckTime =  new Date().toISOString();
+                    },
+                    error   : function (xhr, status, error){
+                        console.error('Error:', error);
+                    }
+                });
+            }
+            setInterval(fetchNewMessages, 5000);
         });
 </script>
     

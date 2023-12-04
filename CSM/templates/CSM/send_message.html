@@ -23,14 +23,20 @@
           </select>
         </label>
       </div>
-      <!--Message textarea-->
+      <!--Message title-->
+      <div class="relative mb-6" data-te-input-wrapper-init>
+        <label class="block">
+          <span class="block text-sm font-medium text-slate-700">Message Title</span>
+          <input type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="message_title" placeholder="Type title Message Here">
+
+        </label>
+      </div>
+      <!-- Message content -->
       <div class="relative mb-6" data-te-input-wrapper-init>
         <label class="block">
           <span class="block text-sm font-medium text-slate-700">Message Content</span>
           <textarea type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="user_message" placeholder="Type Your Message Here"></textarea>
-          <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
-            Please provide a valid Message.
-          </p>
+
         </label>
       </div>
 

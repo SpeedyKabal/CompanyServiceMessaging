@@ -1,0 +1,17 @@
+{% if messages  != 0 %}
+    {% for message in messages %}
+        <a class="bg-red-200 rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
+            id="{{message.reciever}}{{message.id}}"
+            data-message-id="{{ message.id }}">
+            <!-- Image of The Sender -->
+            <div class="flex flex-col items-center justify-center mx-2">
+                <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
+            </div>
+            <!-- First Name and Last Name of The Sender -->
+            <div class="flex flex-col justify-center px-2 mx-2">
+                <span class="text-base min-w-[6rem]">{{ message.sender.first_name }}</span>
+                <span class="text-base min-w-[6rem]">{{ message.sender.last_name }}</span>
+            </div>
+        </a>
+    {% endfor %}
+{% endif %}
