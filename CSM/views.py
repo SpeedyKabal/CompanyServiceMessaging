@@ -7,6 +7,8 @@ from .decorators import unauthenticated_user, authenticated_user
 from .models import Employee, Messages
 from .forms import EmployeeForm, UserForm
 import re
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -82,6 +84,16 @@ def home(request):
         'unreaded' : unread_messages,
         'ar_messages_ids':arabic_messages_ids,
     }
+    '''
+    if request.method == 'POST':
+        print("request Triggered")
+        if 'user-message' in request.POST:
+            pk = request.POST.get('user-message')
+            msgReaded = Messages.objects.get(id=pk)
+            msgReaded.is_read = True
+            msgReaded.save()
+    '''
+
     return render(request, "CSM/home.html", context)
 
 
@@ -134,3 +146,39 @@ def sendMessage(request):
         'employee':employee
     }
     return render(request, "CSM/send_message.html", context)
+
+
+@csrf_exempt  # Only for demonstration purposes, you may want to handle CSRF properly in production.
+def submit_form(request):
+    if request.method == 'POST':
+        data_from_frontend = request.POST.get('data_from_frontend')
+        pk = Messages.objects.get(id=data_from_frontend)
+        message = pk.message
+        # Process the data as needed
+
+        # For demonstration, just returning the processed data in JSON format
+        return JsonResponse({'status': 'success', 'processed_data': message})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+@csrf_exempt 
+def markItRead(request):
+    if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        message_id = request.POST.get('message_id')
+        message = get_object_or_404(Messages, id=message_id)
+        message.is_read = True
+        message.save()
+        context = {
+            'content': message.message,
+            'title': message.title,
+            'date': message.date_created
+        }
+        return JsonResponse(context)
+    else:
+        return JsonResponse({'error':'Invalid request'})
+
+
+def test(request):
+    allUser = Employee.objects.all
+    return render(request, "CSM/test.html")

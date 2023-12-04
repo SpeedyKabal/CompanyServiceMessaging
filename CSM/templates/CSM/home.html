@@ -9,11 +9,13 @@
         <section class="flex justify-center">
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
-                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth">
+                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth">
                     {% if messages  != 0 %}
                         {% for message in messages %}
-                            {% if message.id in unreaded %} 
-                                <a class="bg-red-200 rounded-l-lg text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" id="{{message.reciever}}{{message.id}}">
+                            {% if message.id in unreaded %}
+                                <a class="bg-red-200 rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
+                                    id="{{message.reciever}}{{message.id}}"
+                                    data-message-id="{{ message.id }}">
                                     <!-- Image of The Sender -->
                                     <div class="flex flex-col items-center justify-center mx-2">
                                         <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
@@ -25,7 +27,9 @@
                                     </div>
                                 </a>
                             {% else %}
-                                <a class="bg-green-100 rounded-l-lg text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" id="{{message.reciever}}{{message.id}}">
+                                <a class="bg-green-100 rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
+                                    id="{{message.reciever}}{{message.id}}"
+                                    data-message-id="{{ message.id }}">
                                     <!-- Image of The Sender -->
                                     <div class="flex flex-col items-center justify-center mx-2">
                                         <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
@@ -44,21 +48,21 @@
                 <div class="w-[80%] min-h-[26rem] max-h-[27rem] flex flex-col">
                     <!-- Title of The Message -->
                     <div class="flex justify-center w-full h-[10%] border-b-2 border-solid border-slate-400 px-2 mx-2 bg-blue-200">
-                        {% for message in messages %}
-                            <span class="px-2 mx-2 text-red-500 message-title hidden" id="{{message.reciever}}{{message.id}}">{{message.title}}</span>
-                        {% endfor %}
+                        {% comment %} {% for message in messages %} {% endcomment %}
+                            <span class="message-title px-2 mx-2 text-red-500"></span>
+                        {% comment %} {% endfor %} {% endcomment %}
                     </div>
                     <!-- The Message -->
                     <div class="w-full px-2 py-2 mx-2 h-[80%]">
-                        {% for message in messages %}
-                            <p class="message-content hidden" id="{{message.reciever}}{{message.id}}" dir="{% if message.id in ar_messages_ids%}rtl{% else %}ltr{% endif%}">{{ message.message}}</p>
-                        {% endfor %}
+                        {% comment %} {% for message in messages %} {% endcomment %}
+                            <p class="message-content"></p>
+                        {% comment %} {% endfor %}  {% endcomment %}
                     </div>
                     <!-- Information About the Message -->
                     <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-blue-200">
-                        {% for message in messages %}
-                            <span class="text-red-500 message-date hidden" id="{{message.reciever}}{{message.id}}">{{message.date_created}}</span>
-                        {% endfor %}
+                        {% comment %} {% for message in messages %} {% endcomment %}
+                            <span class="message-date text-red-500"></span>
+                        {% comment %} {% endfor %} {% endcomment %}
                     </div>
                 </div>
 
@@ -68,49 +72,50 @@
 {% endblock  %}
 
 {% block scripts %}
+    
     <script>
-        allMessages = document.querySelectorAll('.message-content');
-        allUser = document.querySelectorAll('.user');
-        allTitls = document.querySelectorAll('.message-title');
-        allDates = document.querySelectorAll('.message-date');
-
-        allUser.forEach(function (userElement) {
-            userElement.addEventListener('click', function () {
-                allMessages.forEach(function (messageElement) {
-                    if(userElement.id == messageElement.id){
-                        messageElement.classList.remove('hidden')
-                    }else{
-                        messageElement.classList.add('hidden')
+        $(document).ready(function () {
+            function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
-                })
+                }
+            }
+            return cookieValue;
+        }
+            $('.user').click(function (e) {
+                e.preventDefault();
+                var messageId = $(this).data('message-id');
+                var csrfToken = getCookie('csrftoken');
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "CSM:markItRead" %}',
+                    data: {'message_id': messageId},
+                    success: function (data) {
+                        $('.message-content').html(data.content);
+                        $('.message-title').html(data.title);
+                        $('.message-date').html(data.date);
 
-            })
-        });
-        allUser.forEach(function (userElement) {
-            userElement.addEventListener('click', function () {
-                allDates.forEach(function (dateElement) {
-                    if(userElement.id == dateElement.id){
-                        dateElement.classList.remove('hidden')
-                    }else{
-                        dateElement.classList.add('hidden')
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        $('.message-content').html('Error submitting the form');
+                        $('.message-title').html('Error submitting the form');
+                        $('.message-date').html('Error submitting the form');
                     }
-                })
-
-            })
+                });
+                $(this).removeClass("bg-red-200");
+                $(this).addClass("bg-green-100");
+            });
         });
-        allUser.forEach(function (userElement) {
-            userElement.addEventListener('click', function () {
-                allTitls.forEach(function (titleElement) {
-                    if(userElement.id == titleElement.id){
-                        titleElement.classList.remove('hidden')
-                    }else{
-                        titleElement.classList.add('hidden')
-                    }
-                })
-
-            })
-        });
-    </script>
+</script>
+    
 {% endblock %}
 
 
