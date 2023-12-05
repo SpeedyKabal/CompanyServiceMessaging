@@ -13,5 +13,5 @@ urlpatterns = [
     path('Logout/', views.signMeOut, name="SignOut"),
     path('settings/', views.settings, name="Setting"),
     path('send_message/', views.sendMessage, name="Send_Message"),
-    path('<str:profile_user>', views.profile , name="Profile")
+    path('<str:profile_user>/', views.profile , name="Profile")
 ]
