@@ -111,24 +111,24 @@ def profile(request, profile_user):
 
 @authenticated_user
 def settings(request):
-    user_profile = Employee.objects.get(user=request.user)
-    user_profile1 = User.objects.get(username=request.user)
+    employee = Employee.objects.get(user  = request.user)
+    userObject = User.objects.get(username=request.user)
 
-    employee = EmployeeForm(request.POST, instance=user_profile)
-    worker = UserForm(request.POST, instance=user_profile1)
-
+    employeeForm = EmployeeForm(request.POST, instance=employee)
+    userObjectForm = UserForm(request.POST, instance=userObject)
     if request.method == 'POST':
-        employee = EmployeeForm(request.POST, instance=user_profile)
-        worker = UserForm(request.POST, instance=user_profile1)
-        if employee.is_valid() and worker.is_valid():
-            employee.save()
-            worker.save()
-            return redirect("CSM:Profile", profile_user = worker.cleaned_data['username'])
+        employeeForm = EmployeeForm(request.POST, instance=employee)
+        userObjectForm = UserForm(request.POST, instance=userObject)
+        if employeeForm.is_valid() and userObjectForm.is_valid():
+            employeeForm.save()
+            userObjectForm.save()
+            return redirect("CSM:Profile", profile_user = userObjectForm.cleaned_data['username'])
         else:
-            employee = EmployeeForm(instance = user_profile)
-            worker = UserForm(request.POST, instance=user_profile1)
-    return render(request, "CSM/Settings.html", { 'form' : employee,
-                                                 'user': worker } )
+            employeeForm = EmployeeForm(instance = employee)
+            userObjectForm = UserForm(request.POST, instance=userObject)
+    return render(request, "CSM/Settings.html", { 'employee' : employee,
+                                                 'employeeForm':employeeForm,
+                                                 'userObjectForm':userObjectForm} )
 
 
 @authenticated_user
