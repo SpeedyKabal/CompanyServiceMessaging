@@ -2,32 +2,44 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+POSITION = {
+    'director' : {'en':'Director','ar':'مدير المؤسسة'},
+    'statistique' : {'en':'Ingénieur etat en statistique','ar':'مهندس دولة في الإحصائيات'},
+    'informatique' : {'en':'Ingénieur etat en informatique','ar':'مهندس دولة في الإعلام الآلي'},
+    'ts_informatique' : {'en':'Technicien supérieur en informatique','ar':'تقني سامي في الإعلام الآلي'},
+    'Medecin_generaliste' : {'en':'Médecin généraliste de sante publique','ar':'طبيب عام في الصحة العمومية'},
+    'infirmier' : {'en':'Infirmier de sante publique','ar':'ممرض للصحة العمومية'},
+    'comptable' : {'en':'Comptable administratif','ar':'محاسب إداري'},
+    'Adm_Principal' : {'en':'Administrateur principal','ar':'متصرف رئيسي'},
+    'Adm_Analyste' : {'en':'Administrateur analyste','ar':'متصرف محلل'},
+    'Agent_prev_1' : {'en':'Agent de prévention de niveau 1','ar':'عون الوقاية من المستوى 1'},
+    'Agent_Adm' : {'en':'Agent d`administration','ar':'عون إدارة'},
+    'Agent_Bureau' : {'en':'Agent de bureau','ar':'عون مكتب'},
+    'Medecin_generaliste_chef' : {'en':'Médecin généraliste en chef de santé publique','ar':'طبيب عام رئيس في الصحة العمومية'},
+}
 
 class Employee(models.Model):
     GENDER = (
         ('Male','Male'),
         ('Female','Female')
     )
-    POSITION = (
-        ('Director','Director'),
-        ('Statistical Engineering','Statistical Engineering'),
-        ('Informatic Engineering','Informatic Engineering'),
-        ('Informatic Technical Senior','Informatic Technical Senior')
-    )
-    ARPOSITION = (
-        ('مدير المؤسسة','مدير المؤسسة'),
-        ('مهندس دولة في الإحصاء','مهندس دولة في الإحصاء'),
-        ('مهندس دولة في الإعلام الألي','مهندس دولة في الإعلام الألي'),
-        ('تقني سامي في الإعلام الألي','تقني سامي في الإعلام الألي')
-    )
+
     user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
     gender = models.CharField(max_length=6, null=True, choices=GENDER)
     phone = models.CharField(max_length=10, null=True, blank=True)
-    adress = models.TextField(max_length=60, null=True, blank=True)
-    position = models.CharField(max_length=40, null=True, choices=POSITION)
-    ar_position = models.CharField(max_length=40, null=True, choices=ARPOSITION)
+    adress = models.CharField(max_length=128, null=True, blank=True)
+    position = models.CharField(max_length=64, null=True, choices=[(key, value['en']) for key, value in POSITION.items()])
     birthday = models.DateField(null=True)
     profile_pic = models.ImageField(null=True,blank=True, default='profile_pic.png')
+
+    def get_arabic_position(self):
+        selected_position = self.position
+        return POSITION[selected_position]['ar']
+    
+
+    def get_english_position(self):
+        selected_position = self.position
+        return POSITION[selected_position]['en']
 
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"

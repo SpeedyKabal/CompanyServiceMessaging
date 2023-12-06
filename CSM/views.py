@@ -67,7 +67,6 @@ def signMeOut(request):
 
 @authenticated_user
 def home(request):
-    employee = Employee.objects.get(user = request.user) #This Used to show Profile of the User in Navbar
     try:
         allMessages = Messages.objects.filter(reciever = request.user).select_related('sender__employee')
         arabic_messages_ids = []
@@ -81,7 +80,6 @@ def home(request):
         unread_messages = 0
 
     context = {
-        'employee' : employee,
         'messages' : allMessages,
         'unreaded' : unread_messages,
         'ar_messages_ids':arabic_messages_ids,
@@ -101,12 +99,10 @@ def home(request):
 
 @authenticated_user
 def profile(request, profile_user):
-    employee = Employee.objects.get(user = request.user)
     # Using get_object_or_404 to raise a 404 if the user doesn't exist
     userp = get_object_or_404(Employee, user__username = profile_user)
     return render(request, "CSM/profile.html", {
-        'userprofile': userp ,
-        'employee' : employee})
+        'userprofile': userp })
 
 
 @authenticated_user
@@ -126,8 +122,7 @@ def settings(request):
         else:
             employeeForm = EmployeeForm(instance = employee)
             userObjectForm = UserForm(request.POST, instance=userObject)
-    return render(request, "CSM/Settings.html", { 'employee' : employee,
-                                                 'employeeForm':employeeForm,
+    return render(request, "CSM/Settings.html", {'employeeForm':employeeForm,
                                                  'userObjectForm':userObjectForm} )
 
 

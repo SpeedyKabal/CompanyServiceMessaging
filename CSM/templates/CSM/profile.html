@@ -43,8 +43,8 @@
                                 alt="">
                         </div>
                         <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ userprofile}} </h1>
-                        <h3 class="text-gray-600 font-lg text-semibold leading-6">{{ userprofile.position }}</h3>
-                        <p class="text-sm text-gray-500 hover:text-gray-600 leading-6" dir='rtl'>{{ userprofile.ar_position }}</p>
+                        <h3 class="text-gray-600 font-lg text-semibold leading-6">{{ userprofile.get_english_position }}</h3>
+                        <p class="text-sm text-gray-500 hover:text-gray-600 leading-6" dir='rtl'>{{ userprofile.get_arabic_position }}</p>
                         <ul
                             class="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
                             <li class="flex items-center py-3">
@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="grid grid-cols-3">
                                     <div class="pl-6 py-2 font-semibold">Position</div>
-                                    <div class="px-1 py-2 col-span-2">{{ userprofile.position}}</div>
+                                    <div class="px-1 py-2 col-span-2">{{ userprofile.get_english_position}}</div>
                                 </div>
                                 <div class="grid grid-cols-3">
                                     <div class="px-4 py-2 font-semibold">Email</div>

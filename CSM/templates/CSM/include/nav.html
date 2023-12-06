@@ -140,10 +140,10 @@
       <li class="px-2" data-te-nav-item-ref>
         <a
           class="text-neutral-500 transition duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&.active]:text-black/90 dark:[&.active]:text-zinc-400 motion-reduce:transition-none"
-          href="/{{ user.username }}"
+          href="/{{ request.user.username }}"
           data-te-nav-link-ref
           ><img
-            src="{{employee.profile_pic.url}}"
+            src="{{request.user.employee.profile_pic.url}}"
             class="rounded-full"
             style="height: 25px; width: 25px"
             alt="TE Avatar"
