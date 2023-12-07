@@ -180,7 +180,8 @@ def markItRead(request):
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         message_id = request.POST.get('message_id')
         message = get_object_or_404(Messages, id=message_id)
-        message.is_read = True
+        if not (message.is_read):
+            message.is_read = True
         message.save()
         context = {
             'content': message.message,

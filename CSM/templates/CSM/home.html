@@ -22,7 +22,7 @@
                                     </div>
                                     <!-- First Name and Last Name of The Sender -->
                                     <div class="flex flex-col justify-center px-2 mx-2">
-                                        <span class="md:text-sm md:min-w-[6rem] hidden">{{ message.sender.first_name }}</span>
+                                        <span class="text-sm min-w-[6rem]">{{ message.sender.first_name }}</span>
                                         <span class="text-sm min-w-[6rem]">{{ message.sender.last_name }}</span>
                                     </div>
                                 </a>
@@ -36,8 +36,8 @@
                                     </div>
                                     <!-- First Name and Last Name of The Sender -->
                                     <div class="flex flex-col justify-center px-2 mx-2">
-                                        <span class="md:text-sm md:min-w-[6rem] hidden">{{ message.sender.first_name }}</span>
-                                        <span class="text-sm min-w-[6rem]">{{ message.sender.last_name }}</span>
+                                        <span class="text-sm min-w-[6rem] drop-shadow">{{ message.sender.first_name }}</span>
+                                        <span class="text-sm min-w-[6rem] drop-shadow">{{ message.sender.last_name }}</span>
                                     </div>
                                 </a>
                             {% endif %}
@@ -47,7 +47,7 @@
                 <!-- Message Container -->
                 <div class="w-[80%] min-h-[26rem] max-h-[27rem] flex flex-col">
                     <!-- Title of The Message -->
-                    <div class="flex justify-center w-full h-[10%] border-b-2 border-solid border-slate-400 px-2 mx-2 bg-blue-200">
+                    <div class="flex justify-center w-full h-[10%] border-b-2 border-solid border-slate-400 px-2 mx-2 bg-blue-100 drop-shadow-2xl">
                         {% comment %} {% for message in messages %} {% endcomment %}
                             <span class="message-title px-2 mx-2 text-red-500"></span>
                         {% comment %} {% endfor %} {% endcomment %}
@@ -59,7 +59,7 @@
                         {% comment %} {% endfor %}  {% endcomment %}
                     </div>
                     <!-- Information About the Message -->
-                    <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-blue-200">
+                    <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-blue-100 drop-shadow-2xl">
                         {% comment %} {% for message in messages %} {% endcomment %}
                             <span class="message-date text-red-500"></span>
                         {% comment %} {% endfor %} {% endcomment %}
@@ -93,17 +93,33 @@
                 e.preventDefault();
                 var messageId = $(this).data('message-id');
                 var csrfToken = getCookie('csrftoken');
+
                 $.ajax({
                     type: 'POST',
                     url: '{% url "CSM:markItRead" %}',
                     data: {'message_id': messageId},
                     success: function (data) {
+                        // Make the Date in Readable Format -start-
                         var formattedDate = new Date(data.date);
                         var options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
                         var formattedDateString = formattedDate.toLocaleDateString('fr-FR', options);
-                        $('.message-content').html(data.content);
+                        // -end-
+                        // a function to check whether the message in arabic or Not -Start-
+                        function containsArabicCharacters(str) {
+                        var arabicRegex = /[\u0600-\u06FF]/;
+                        return arabicRegex.test(str);
+                        }
+                        if (containsArabicCharacters(data.content)) {
+                            $('.message-content').html(data.content);
+                            $('.message-content').attr('dir', 'rtl');
+                        } else {
+                            $('.message-content').html(data.content);
+                            $('.message-content').attr('dir', 'ltr');
+                        }
+                        // -end-
                         $('.message-title').html(data.title);
                         $('.message-date').html(formattedDateString);
+                        updateNotifications();
 
                     },
                     error: function (xhr, status, error) {
@@ -134,7 +150,22 @@
                     }
                 });
             }
+            // this function responsible for notification abouit new messages
+            function updateNotifications(){
+                var sendersButtons = $(".sender-container a.bg-red-200");
+                var counter = sendersButtons.length;
+                var notificationCounter = $(".notificationCounter");
+                if(counter > 0 ){
+                    notificationCounter.html(counter);
+                    notificationCounter.addClass("bg-red-500");
+                    notificationCounter.removeClass("bg-danger");
+                }else{
+                    notificationCounter.addClass("bg-danger");
+                    notificationCounter.removeClass("bg-red-500");
+                }
+            } 
             setInterval(fetchNewMessages, 5000);
+            setInterval(updateNotifications, 1000);
         });
 </script>
     
