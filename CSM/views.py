@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 @unauthenticated_user
 def index(request):
     if request.method == "POST":
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
 
         user = auth.authenticate(username=username, password=password)
@@ -38,7 +38,7 @@ def index(request):
 @unauthenticated_user
 def signMeUp(request):
     if request.method == "POST":
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
@@ -141,7 +141,7 @@ def settings(request):
             employeeForm = EmployeeForm(instance = employee)
             userObjectForm = UserForm(request.POST, instance=userObject)
     return render(request, "CSM/Settings.html", {'employeeForm':employeeForm,
-                                                 'userObjectForm':userObjectForm} )
+                                                 'userObjectForm':userObjectForm})
 
 
 @authenticated_user

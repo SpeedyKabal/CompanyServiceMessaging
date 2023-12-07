@@ -17,13 +17,13 @@
                                     id="{{message.reciever}}{{message.id}}"
                                     data-message-id="{{ message.id }}">
                                     <!-- Image of The Sender -->
-                                    <div class="flex flex-col items-center justify-center mx-2">
+                                    <div class="md:flex md:flex-col md:items-center md:justify-center md:mx-2 hidden">
                                         <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
                                     <!-- First Name and Last Name of The Sender -->
                                     <div class="flex flex-col justify-center px-2 mx-2">
-                                        <span class="text-base min-w-[6rem]">{{ message.sender.first_name }}</span>
-                                        <span class="text-base min-w-[6rem]">{{ message.sender.last_name }}</span>
+                                        <span class="md:text-sm md:min-w-[6rem] hidden">{{ message.sender.first_name }}</span>
+                                        <span class="text-sm min-w-[6rem]">{{ message.sender.last_name }}</span>
                                     </div>
                                 </a>
                             {% else %}
@@ -31,13 +31,13 @@
                                     id="{{message.reciever}}{{message.id}}"
                                     data-message-id="{{ message.id }}">
                                     <!-- Image of The Sender -->
-                                    <div class="flex flex-col items-center justify-center mx-2">
+                                    <div class="md:flex md:flex-col md:items-center md:justify-center md:mx-2 hidden">
                                         <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
                                     <!-- First Name and Last Name of The Sender -->
                                     <div class="flex flex-col justify-center px-2 mx-2">
-                                        <span class="text-base min-w-[6rem]">{{ message.sender.first_name }}</span>
-                                        <span class="text-base min-w-[6rem]">{{ message.sender.last_name }}</span>
+                                        <span class="md:text-sm md:min-w-[6rem] hidden">{{ message.sender.first_name }}</span>
+                                        <span class="text-sm min-w-[6rem]">{{ message.sender.last_name }}</span>
                                     </div>
                                 </a>
                             {% endif %}
@@ -98,9 +98,12 @@
                     url: '{% url "CSM:markItRead" %}',
                     data: {'message_id': messageId},
                     success: function (data) {
+                        var formattedDate = new Date(data.date);
+                        var options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
+                        var formattedDateString = formattedDate.toLocaleDateString('fr-FR', options);
                         $('.message-content').html(data.content);
                         $('.message-title').html(data.title);
-                        $('.message-date').html(data.date);
+                        $('.message-date').html(formattedDateString);
 
                     },
                     error: function (xhr, status, error) {

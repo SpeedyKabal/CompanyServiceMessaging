@@ -46,6 +46,11 @@ class Employee(models.Model):
 
     def __str__(self):
         return self.full_name() 
+    
+    def save(self, *args, **kwargs):
+        # Ensure the username is always saved in lowercase
+        self.user.username = self.user.username.lower()
+        super(Employee, self).save(*args, **kwargs)
 
 
 class Messages(models.Model):

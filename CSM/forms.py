@@ -23,4 +23,7 @@ class UserForm(ModelForm):
         model = User
         fields = ['username','first_name', 'last_name','email']
 
+    def clean_username(self):
+        return self.cleaned_data['username'].lower()
+
 
