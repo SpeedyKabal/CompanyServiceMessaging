@@ -1,8 +1,11 @@
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import auth
+from django.contrib.auth import update_session_auth_hash
 from django.http.response import HttpResponseRedirect
 from .decorators import unauthenticated_user, authenticated_user
 from .models import Employee, Messages
@@ -106,6 +109,21 @@ def profile(request, profile_user):
 
 
 @authenticated_user
+def PasswordsChangeView(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = SetPasswordForm(user=request.user, data=request.POST)
+            if form.is_valid():
+                form.save()
+                update_session_auth_hash(request, form.user)
+                messages.success(request, 'Password changed successfully.')
+                return redirect("CSM:SignOut")
+        else:
+            form = SetPasswordForm(user=request.user)
+    return(request, "CSM/updatePassword.html", {'form':form})
+
+
+@authenticated_user
 def settings(request):
     employee = Employee.objects.get(user  = request.user)
     userObject = User.objects.get(username=request.user)
@@ -113,7 +131,7 @@ def settings(request):
     employeeForm = EmployeeForm(request.POST, instance=employee)
     userObjectForm = UserForm(request.POST, instance=userObject)
     if request.method == 'POST':
-        employeeForm = EmployeeForm(request.POST, instance=employee)
+        employeeForm = EmployeeForm(request.POST,request.FILES, instance=employee)
         userObjectForm = UserForm(request.POST, instance=userObject)
         if employeeForm.is_valid() and userObjectForm.is_valid():
             employeeForm.save()
@@ -145,20 +163,17 @@ def sendMessage(request):
     }
     return render(request, "CSM/send_message.html", context)
 
-
-@csrf_exempt  # Only for demonstration purposes, you may want to handle CSRF properly in production.
+'''
+@csrf_exempt  
 def submit_form(request):
     if request.method == 'POST':
         data_from_frontend = request.POST.get('data_from_frontend')
         pk = Messages.objects.get(id=data_from_frontend)
         message = pk.message
-        # Process the data as needed
-
-        # For demonstration, just returning the processed data in JSON format
         return JsonResponse({'status': 'success', 'processed_data': message})
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
+'''
 
 @csrf_exempt 
 def markItRead(request):

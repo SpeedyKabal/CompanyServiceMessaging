@@ -12,9 +12,10 @@
     {% include "CSM/include/nav.html" %}
     <div class="container flex flex-1">
         <div class="profile w-1/3 border-2 border-slate-300 mx-4 px-2 my-4">
-                <img src="" alt="profile_picture" class="w-full">
+                <img src="{{request.user.employee.profile_pic.url}}" alt="profile_picture" class="w-full">
         </div>
         <form method="POST">
+        {% csrf_token %}
         <div class="container flex gap-3 mx-4 px-2 my-4 justify-center">
                 <div class="flex w-full flex-col gap-6 ">
                         <!-- Username -->
@@ -63,16 +64,15 @@
                         </div>
                         <!-- Position -->
                         <div class="relative h-10 w-full min-w-[200px]">
-                                <!--
+
                                 <select id="id_position" name="position" class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
-                                          {% comment %}  
-                                        {% for value , label in employee.position %}
-                                          <option value="{{value.text}}" >{{label.text}}</option>
+
+                                        {% for key , value in employeeForm.fields.position.choices %}
+                                                <option value="{{key}}" >{{value}}</option>
                                         {% endfor %}
-                                        {% endcomment %}
+
                                 </select>
-                                -->
-                                {{employeeForm.as_p}}
+
                                 <!-- 
                                 <input
                                 name="position"
@@ -92,8 +92,8 @@
                         <div class="relative h-10 w-full min-w-[200px]">
                                 <select id="id_gender" name="gender" class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
 
-                                        {% for gender in employee.gender %}
-                                          <option value="{{gender.gender}}" >{{gender.gender}}</option>
+                                        {% for key, value in employeeForm.fields.gender.choices %}
+                                          <option value="{{key}}">{{value}}</option>
                                         {% endfor %}
                                 </select>
                                 <!-- 
@@ -123,7 +123,7 @@
                         <!-- Address -->
                         <div class="relative h-10 w-full min-w-[200px]">
                                 <input
-                                name="address"
+                                name="adress"
                                 class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                 placeholder=" "
                                 />
@@ -147,7 +147,7 @@
                         <div class="relative h-10 w-full min-w-[200px]">
                                 <input
                                 type="file" accept=".jpg, .jpeg, .png"
-                                name="profile_picture"
+                                name="profile_pic"
                                 class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                 placeholder=" "
                                 />
@@ -157,7 +157,10 @@
                         </div>
                 </div>
         </div>
-        <button type="submit">Save</button>
+        <button 
+        type="submit"
+        class="w-full py-2 ml-5 bg-blue-400 text-slate-800 rounded-lg hover:bg-green-500 transition-colors duration-500">
+        Update Profile <i class="fa-solid fa-floppy-disk"></i></button>
         </form>
     </div>
         
