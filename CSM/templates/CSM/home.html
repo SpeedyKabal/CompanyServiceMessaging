@@ -87,9 +87,11 @@
                         {% comment %} {% endfor %} {% endcomment %}
                     </div>
                     <!-- The Message -->
-                    <div class="w-full px-2 py-2 mx-2 h-[80%]">
+                    <div class="w-full px-2 py-2 mx-2 h-[80%] grid content-between justify-between">
                         {% comment %} {% for message in messages %} {% endcomment %}
                             <p class="message-content"></p>
+                            <div class="files flex border-2 border-slate-300 bg-green-100 max-w-[75%]">
+                            </div>
                         {% comment %} {% endfor %}  {% endcomment %}
                     </div>
                     <!-- Information About the Message -->
@@ -154,6 +156,27 @@
                         // -end-
                         $('.message-title').html(data.title);
                         $('.message-date').html(formattedDateString);
+                        var filesContainer = $('.files');
+                        filesContainer.empty(); // Clear previous content
+
+                        if (data.fichiers && data.fichiers.length > 0) {
+                            var filesList = $('<ul class="flex gap-12 overflow-x-scroll"></ul>');
+
+                            data.fichiers.forEach(function(urlfile) {
+                                var listItem = $('<li class="bg-red-100"><i class="fa-regular fa-file"></i></li>');
+                                var fileLink = $('<a></a>', {
+                                    href: urlfile,
+                                    target: '_blank',
+                                    text: urlfile.split('/').pop() // Display the file name
+                                });
+                                listItem.append(fileLink);
+                                filesList.append(listItem);
+                            });
+
+                            filesContainer.append(filesList);
+                        } else {
+                            filesContainer.html('No attached files');
+                        }
                         updateNotifications();
 
                     },

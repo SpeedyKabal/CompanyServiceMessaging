@@ -1,6 +1,6 @@
 # admin.py
 from django.contrib import admin
-from .models import Employee, Messages
+from .models import Employee, Messages, Files
 
 
 class EmployeeAdmin(admin.ModelAdmin):
@@ -45,6 +45,24 @@ class MessagesAdmin(admin.ModelAdmin):
     get_message.short_description = "Message"
 
 
+class FilesAdmin(admin.ModelAdmin):
+    list_filter = ['message_id__sender__last_name', 'message_id__reciever__last_name', 'date_created']
+    list_display = ['get_file_sender','get_file_reciever','date_created', 'file']
+
+
+    def get_file_sender(self, obj):
+        return f"{obj.message_id.sender.first_name} {obj.message_id.sender.last_name}"
+    
+
+    def get_file_reciever(self, obj):
+        return f"{obj.message_id.reciever.first_name} {obj.message_id.reciever.last_name}"
+    
+
+    get_file_sender.short_description = "Sender"
+    get_file_reciever.short_description = "Reciecver"
+
+
 
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Messages, MessagesAdmin)
+admin.site.register(Files, FilesAdmin)

@@ -10,13 +10,13 @@
 
 {% block content %}
     {% include "CSM/include/nav.html" %}
-    <div class="container flex flex-1">
-        <div class="profile w-1/3 border-2 border-slate-300 mx-4 px-2 my-4">
-                <img src="{{request.user.employee.profile_pic.url}}" alt="profile_picture" class="w-full">
+    <div class="container lg:flex flex-1 grid justify-items-center">
+        <div class="profile border-2 border-slate-300 mx-4 px-2 my-4 w-80 h-80 max-w-md max-h-md">
+                <img src="{{request.user.employee.profile_pic.url}}" alt="profile_picture" class="w-full h-full object-cover">
         </div>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="container flex gap-3 mx-4 px-2 my-4 justify-center">
+        <div class="container lg:flex gap-3 mx-4 px-2 my-4 grid justify-center">
                 <div class="flex w-full flex-col gap-6 ">
                         <!-- Username -->
                         <div class="relative h-10 w-full min-w-[200px]">

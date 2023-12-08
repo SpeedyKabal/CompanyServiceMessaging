@@ -8,7 +8,7 @@
     {% include "CSM/include/nav.html" %}
   <div
     class="flex-1 block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
 
       <!--Name input-->
@@ -36,6 +36,15 @@
         <label class="block">
           <span class="block text-sm font-medium text-slate-700">Message Content</span>
           <textarea type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="user_message" placeholder="Type Your Message Here"></textarea>
+
+        </label>
+      </div>
+
+      <!-- Files Uploaded -->
+      <div class="relative mb-6" data-te-input-wrapper-init>
+        <label class="block">
+          <span class="block text-sm font-medium text-slate-700">Files Uploader</span>
+          <input type="file" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="files" multiple>
 
         </label>
       </div>

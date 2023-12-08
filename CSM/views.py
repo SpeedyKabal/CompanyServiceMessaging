@@ -8,7 +8,7 @@ from django.contrib import auth
 from django.contrib.auth import update_session_auth_hash
 from django.http.response import HttpResponseRedirect
 from .decorators import unauthenticated_user, authenticated_user
-from .models import Employee, Messages
+from .models import Employee, Messages, Files
 from .forms import EmployeeForm, UserForm
 from django.utils import timezone
 import re
@@ -71,12 +71,7 @@ def signMeOut(request):
 @authenticated_user
 def home(request):
     try:
-        allMessages = Messages.objects.filter(reciever = request.user).select_related('sender__employee')
-        arabic_messages_ids = []
-        for message in allMessages:
-            if re.search(r'[\u0600-\u06FF]', message.message):
-                arabic_messages_ids.append(message.id)
-
+        allMessages = Messages.objects.filter(reciever = request.user).select_related('sender__employee')    
         unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
     except Messages.DoesNotExist:
         allMessages = 0
@@ -84,8 +79,7 @@ def home(request):
 
     context = {
         'messages' : allMessages,
-        'unreaded' : unread_messages,
-        'ar_messages_ids':arabic_messages_ids,
+        'unreaded' : unread_messages
     }
     '''
     if request.method == 'POST':
@@ -154,8 +148,12 @@ def sendMessage(request):
         reciever = get_object_or_404(User, username=reciever_username)
         message = request.POST['user_message']
         messageTitle = request.POST['message_title']
+        uploaded_files = request.FILES.getlist('files')
         sent_message = Messages.objects.create(sender=sender, reciever=reciever, message=message, title=messageTitle)
         sent_message.save()
+        for fichier in uploaded_files:
+            Files.objects.create(message_id=sent_message, file = fichier)
+
         return redirect("CSM:home")
     context = {
         'users':recievers ,
@@ -180,13 +178,17 @@ def markItRead(request):
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         message_id = request.POST.get('message_id')
         message = get_object_or_404(Messages, id=message_id)
+        files = Files.objects.filter(message_id = message_id)
+        file_urls = [file.file.url for file in files]
         if not (message.is_read):
             message.is_read = True
-        message.save()
+            message.save()
+        
         context = {
             'content': message.message,
             'title': message.title,
-            'date': message.date_created
+            'date': message.date_created, 
+            'fichiers' : file_urls,
         }
         return JsonResponse(context)
     else:

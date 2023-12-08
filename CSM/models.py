@@ -65,4 +65,12 @@ class Messages(models.Model):
         return self.sender.first_name
 
 
+class Files(models.Model):
+    message_id = models.ForeignKey(Messages, related_name='fichiers',on_delete=models.CASCADE)
+    file = models.FileField(upload_to='UploadedFiles/')
+    date_created = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return self.message_id.sender.first_name
 
