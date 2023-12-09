@@ -12,6 +12,7 @@ from .models import Employee, Messages, Files
 from .forms import EmployeeForm, UserForm
 from django.utils import timezone
 import re
+from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -203,6 +204,15 @@ def fetch_new_messages(request):
         new_messages = Messages.objects.filter(reciever_id = employeeId, date_created__gt = lastCheck, is_read = False)
         newMessageHtml = render_to_string('CSM/newUserHtml.html', {'messages': new_messages})
         return JsonResponse({'latestMessage' : newMessageHtml })
+    else:
+        return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})
+    
+
+def fetch_new_messages_for_notification(request):
+    employeeId = request.GET.get('employeeId') #The Id of The Sender
+    if employeeId is not None:
+        new_messages = Messages.objects.filter(reciever_id = employeeId, is_read = False).count()
+        return JsonResponse({'notifications' : new_messages })
     else:
         return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})
     

@@ -1,3 +1,6 @@
+{% load static %}
+
+<audio id="notification_new_message" src="{% static 'audio/newmessage.wav' %}" preload="auto"></audio>
 <nav
   class="relative flex w-full flex-wrap items-center justify-between bg-[#FBFBFB] py-2 text-neutral-500 shadow-lg hover:text-neutral-700 focus:text-neutral-700 dark:bg-neutral-600 lg:py-4"
 >
@@ -11,9 +14,9 @@
       >
         <img
           class="mr-2"
-          src="https://tecdn.b-cdn.net/img/logo/te-transparent-noshadows.webp"
-          style="height: 20px"
-          alt="TE Logo"
+          src="{% static 'favicon.png' %}"
+          style="height: 30px"
+          alt="CSM Logo"
           loading="lazy"
         />
       </a>
@@ -40,8 +43,8 @@
           </svg>
           <!-- Notification counter -->
           <span
-            class="absolute -mt-7 ml-4 rounded-full px-[0.50em] py-[0.25em] text-[0.6rem] font-bold leading-none text-white notificationCounter"
-            >215</span
+            class="absolute -mt-8 ml-3 rounded-full px-[0.50em] py-[0.25em] text-[0.8rem] font-bold leading-none text-red-800 notificationCounter"
+            >0</span
           >
         </a>
       </li>
@@ -187,25 +190,60 @@
     <!-- Right elements -->
   </div>
 </nav>
-{% block scripts %}
-  <script>
-    var nav_dropDownMenu = document.getElementById("DownArrow");
 
-    var downArrow = false;
+<script>
+  $(document).ready(function () {
 
-    nav_dropDownMenu.addEventListener("click", function (){
-        if(downArrow){
-            var ul_nav = document.getElementById("ul_nav");
-            ul_nav.classList.add("hidden");
-            ul_nav.classList.add("overflow-hidden");
-            downArrow = false;
-        }else{
-            var ul_nav = document.getElementById("ul_nav");
-            ul_nav.classList.remove("hidden");
-            ul_nav.classList.remove("overflow-hidden");
-            downArrow = true;
-        }
 
-    });
-  </script>
-{% endblock %}
+      setInterval(function(){
+          if(parseInt($(".notificationCounter").text()) > 0){
+              $('#notification_new_message')[0].play();
+          }
+      }, 15000);
+
+      function fetchNewMessagesNotifications(){
+          var employeeId = {{ request.user.id }}
+          $.ajax({
+              type    :"GET",
+              url     : "{% url 'CSM:newMessagesNotification' %}",
+              data    : {'employeeId' : employeeId},
+              success : function (data){
+                  if(data.notifications > 0){
+                      $('.notificationCounter').html(data.notifications);
+                      $('.notificationCounter').removeClass("hidden");
+                  }else{
+                      $('.notificationCounter').addClass("hidden");
+                      $('.notificationCounter').html(0);                   
+                  }
+              },
+              error   : function (xhr, status, error){
+                  console.error('Error:', error);
+              }
+          });
+      }
+      setInterval(fetchNewMessagesNotifications, 2000);
+
+  });
+
+
+  var nav_dropDownMenu = document.getElementById("DownArrow");
+
+  var downArrow = false;
+
+  nav_dropDownMenu.addEventListener("click", function (){
+      if(downArrow){
+          var ul_nav = document.getElementById("ul_nav");
+          ul_nav.classList.add("hidden");
+          ul_nav.classList.add("overflow-hidden");
+          downArrow = false;
+      }else{
+          var ul_nav = document.getElementById("ul_nav");
+          ul_nav.classList.remove("hidden");
+          ul_nav.classList.remove("overflow-hidden");
+          downArrow = true;
+      }
+
+  });
+
+
+</script>

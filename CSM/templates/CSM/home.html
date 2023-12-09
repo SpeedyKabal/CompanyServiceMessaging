@@ -1,10 +1,13 @@
 {% extends "CSM/include/base.html" %}
 
+{% load static %}
+
 {% block title %}
     Home Page
 {% endblock  %}
 
 {% block css %}
+
   <style>
     .loading-overlay {
       display: none;
@@ -96,9 +99,7 @@
                     </div>
                     <!-- Information About the Message -->
                     <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-blue-100 drop-shadow-2xl">
-                        {% comment %} {% for message in messages %} {% endcomment %}
-                            <span class="message-date text-red-500"></span>
-                        {% comment %} {% endfor %} {% endcomment %}
+                        <span class="message-date text-red-500"></span>
                     </div>
                 </div>
 
@@ -108,9 +109,10 @@
 {% endblock  %}
 
 {% block scripts %}
-    
+
     <script>
         $(document).ready(function () {
+            
             var loading = $(".loading-overlay");
             function getCookie(name) {
                 var cookieValue = null;
@@ -177,11 +179,9 @@
                         } else {
                             filesContainer.html('No attached files');
                         }
-                        updateNotifications();
 
                     },
                     error: function (xhr, status, error) {
-                        console.error('Error:', error);
                         $('.message-content').html('Error submitting the form');
                         $('.message-title').html('Error submitting the form');
                         $('.message-date').html('Error submitting the form');
@@ -212,24 +212,10 @@
                     }
                 });
             }
-            // this function responsible for notification abouit new messages
-            function updateNotifications(){
-                var sendersButtons = $(".sender-container a.bg-red-200");
-                var counter = sendersButtons.length;
-                var notificationCounter = $(".notificationCounter");
-                if(counter > 0 ){
-                    notificationCounter.html(counter);
-                    notificationCounter.addClass("bg-red-500");
-                    notificationCounter.removeClass("bg-danger");
-                }else{
-                    notificationCounter.addClass("bg-danger");
-                    notificationCounter.removeClass("bg-red-500");
-                }
-            } 
             setInterval(fetchNewMessages, 8000);
-            setInterval(updateNotifications, 1000);
+
         });
-</script>
+    </script>
     
 {% endblock %}
 

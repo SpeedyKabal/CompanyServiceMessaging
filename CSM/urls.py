@@ -10,6 +10,7 @@ urlpatterns = [
     path('home/', views.home, name="home"),
     path('markItRead/', views.markItRead, name='markItRead'),
     path('getnewmessages/', views.fetch_new_messages, name='newMessages'),
+    path('getnewmessagesNotifications/', views.fetch_new_messages_for_notification, name='newMessagesNotification'),
     path('Logout/', views.signMeOut, name="SignOut"),
     path('settings/', views.settings, name="Setting"),
     path('changepassword/', views.PasswordsChangeView, name="changePassword"),
