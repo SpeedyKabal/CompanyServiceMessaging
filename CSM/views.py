@@ -40,8 +40,8 @@ def index(request):
 def signMeUp(request):
     if request.method == "POST":
         username = request.POST['username'].lower()
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
+        first_name = request.POST['first_name'].capitalize()
+        last_name = request.POST['last_name'].upper()
         email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
@@ -178,12 +178,39 @@ def submit_form(request):
 def markItRead(request):
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         message_id = request.POST.get('message_id')
-        message = get_object_or_404(Messages, id=message_id)
+        try:
+            message = Messages.objects.get(id=message_id)
+        except Messages.DoesNotExist:
+            message = 0
         files = Files.objects.filter(message_id = message_id)
         file_urls = [file.file.url for file in files]
         if not (message.is_read):
             message.is_read = True
             message.save()
+        
+        context = {
+            'content': message.message,
+            'title': message.title,
+            'date': message.date_created, 
+            'fichiers' : file_urls,
+        }
+        return JsonResponse(context)
+    else:
+        return JsonResponse({'error':'Invalid request'})
+    
+
+@csrf_exempt 
+def getMyMessages(request):
+    if request.method == 'POST':
+        message_id = request.POST.get('message_id')
+        try:
+            message = Messages.objects.get(id=message_id)
+        except Messages.DoesNotExist:
+            message = {'message' : 'Not Found',
+                       'title':'Not found',
+                       'date_created':'Not Found'}
+        files = Files.objects.filter(message_id = message_id)
+        file_urls = [file.file.url for file in files]
         
         context = {
             'content': message.message,
@@ -217,6 +244,20 @@ def fetch_new_messages_for_notification(request):
         return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})
     
 
+
+def inbox(request):
+    try:
+        allMessages = Messages.objects.filter(sender = request.user)
+        unread_messages = Messages.objects.filter(sender = request.user, is_read = False).values_list('id',flat=True)
+    except Messages.DoesNotExist:
+        allMessages = 0
+        unread_messages = 0
+
+    context = {
+        'messages' : allMessages,
+        'unreaded' : unread_messages
+    }
+    return render(request, "CSM/inbox.html", context)
 
 def test(request):
     allUser = Employee.objects.all

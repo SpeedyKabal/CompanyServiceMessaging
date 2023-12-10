@@ -3,47 +3,13 @@
 {% load static %}
 
 {% block title %}
-    Home Page
-{% endblock  %}
-
-{% block css %}
-
-  <style>
-    .loading-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-
-    .loading-spinner {
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top: 4px solid #3498db;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    Inbox Page
 {% endblock  %}
 
 {% block content %}
     {% include "CSM/include/nav.html" %}
-        <div class="loading-overlay">
-            <div class="loading-spinner"></div>
-        </div>
-        <section class="flex justify-center flex-1">
+    
+            <section class="flex justify-center flex-1">
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
                 <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth sender-container">
@@ -51,30 +17,28 @@
                         {% for message in messages %}
                             {% if message.id in unreaded %}
                                 <a class="bg-red-200 rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
-                                    id="{{message.reciever}}{{message.id}}"
                                     data-message-id="{{ message.id }}">
                                     <!-- Image of The Sender -->
                                     <div class="lg:flex lg:flex-col lg:items-center lg:justify-center lg:mx-2 hidden">
-                                        <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
+                                        <img src="{{message.reciever.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
                                     <!-- First Name and Last Name of The Sender -->
                                     <div class="flex flex-col justify-center px-2 mx-2">
-                                        <span class="text-sm min-w-[6rem]">{{ message.sender.first_name }}</span>
-                                        <span class="text-sm min-w-[6rem]">{{ message.sender.last_name }}</span>
+                                        <span class="text-sm min-w-[6rem]">{{ message.reciever.last_name }}</span>
+                                        <span class="text-sm min-w-[6rem]">{{ message.reciever.first_name }}</span>
                                     </div>
                                 </a>
                             {% else %}
                                 <a class="bg-green-100 rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
-                                    id="{{message.reciever}}{{message.id}}"
                                     data-message-id="{{ message.id }}">
                                     <!-- Image of The Sender -->
                                     <div class="lg:flex lg:flex-col lg:items-center lg:justify-center lg:mx-2 hidden">
-                                        <img src="{{message.sender.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
+                                        <img src="{{message.reciever.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
                                     </div>
                                     <!-- First Name and Last Name of The Sender -->
                                     <div class="flex flex-col justify-center px-2 mx-2">
-                                        <span class="text-sm min-w-[6rem] drop-shadow">{{ message.sender.first_name }}</span>
-                                        <span class="text-sm min-w-[6rem] drop-shadow">{{ message.sender.last_name }}</span>
+                                        <span class="text-sm min-w-[6rem] drop-shadow">{{ message.reciever.last_name }}</span>
+                                        <span class="text-sm min-w-[6rem] drop-shadow">{{ message.reciever.first_name }}</span>
                                     </div>
                                 </a>
                             {% endif %}
@@ -106,11 +70,11 @@
             </div>
         </section>
     {% include "CSM/include/footer.html" %}
-{% endblock  %}
+
+{% endblock %}
 
 {% block scripts %}
-
-    <script>
+        <script>
         $(document).ready(function () {
             
             var loading = $(".loading-overlay");
@@ -135,7 +99,7 @@
                 loading.css("display", "flex");
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "CSM:markItRead" %}',
+                    url: '{% url "CSM:MyMessages" %}',
                     data: {'message_id': messageId},
                     success: function (data) {
                         // Make the Date in Readable Format -start-
@@ -145,8 +109,8 @@
                         // -end-
                         // a function to check whether the message in arabic or Not -Start-
                         function containsArabicCharacters(str) {
-                        var arabicRegex = /[\u0600-\u06FF]/;
-                        return arabicRegex.test(str);
+                            var arabicRegex = /[\u0600-\u06FF]/;
+                            return arabicRegex.test(str);
                         }
                         if (containsArabicCharacters(data.content)) {
                             $('.message-content').html(data.content);
@@ -191,33 +155,8 @@
                         loading.css("display", "none");
                     }
                 });
-                $(this).removeClass("bg-red-200");
-                $(this).addClass("bg-green-100");
             });
-            var lastCheckTime = new Date().toISOString();
             
-            function fetchNewMessages(){
-                var employeeId = {{ request.user.id }}
-                $.ajax({
-                    type    :"GET",
-                    url     : "{% url 'CSM:newMessages' %}",
-                    data    : {'employeeId' : employeeId,
-                               'date_message' :  lastCheckTime },
-                    success : function (data){
-                        $('.sender-container').append(data.latestMessage);
-                        lastCheckTime =  new Date().toISOString();
-                    },
-                    error   : function (xhr, status, error){
-                        console.error('Error:', error);
-                    }
-                });
-            }
-            setInterval(fetchNewMessages, 8000);
-
         });
     </script>
-    
 {% endblock %}
-
-
-

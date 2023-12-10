@@ -18,7 +18,7 @@
           <select id="Employees" name="user_option" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300">
 
             {% for user in users %}
-              <option value="{{user.username}}" >{{user.first_name}} {{user.last_name}}</option>
+              <option value="{{user.username}}" >{{user.last_name}} {{user.first_name}} </option>
             {% endfor %}
           </select>
         </label>
