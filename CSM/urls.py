@@ -17,5 +17,6 @@ urlpatterns = [
     path('settings/', views.settings, name="Setting"),
     path('changepassword/', views.PasswordsChangeView, name="changePassword"),
     path('send_message/', views.sendMessage, name="Send_Message"),
+    path('allemployees/', views.allUserProfiles, name="AllProfiles"),
     path('<str:profile_user>/', views.profile , name="Profile")
 ]

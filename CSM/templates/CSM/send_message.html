@@ -14,7 +14,11 @@
       <!--Name input-->
       <div class="relative mb-6" data-te-input-wrapper-init>
         <label class="block">
-          <label for="Employees" class="block text-sm font-medium text-slate-700">Send Message To</label>
+          <div class="flex justify-between">
+            <label for="Employees" class="block text-sm font-medium text-slate-700">Send Message To</label>
+            <label for="Employees" class="block text-sm font-medium text-slate-700" dir="rtl">إرسال الرسالة إلى</label>
+            
+          </div>
           <select id="Employees" name="user_option" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300">
 
             {% for user in users %}
@@ -26,15 +30,23 @@
       <!--Message title-->
       <div class="relative mb-6" data-te-input-wrapper-init>
         <label class="block">
-          <span class="block text-sm font-medium text-slate-700">Message Title</span>
-          <input type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="message_title" placeholder="Type title Message Here">
+          <div class="flex justify-between">
+            <span class="block text-sm font-medium text-slate-700">Message Title</span>
+            <span class="block text-sm font-medium text-slate-700" dir="rtl">عنوان الرسالة</span>
+
+          </div>
+          <input type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 text-center" name="message_title" placeholder="Type title Message Here">
 
         </label>
       </div>
       <!-- Message content -->
       <div class="relative mb-6" data-te-input-wrapper-init>
         <label class="block">
-          <span class="block text-sm font-medium text-slate-700">Message Content</span>
+          <div class="flex justify-between">
+            <span class="block text-sm font-medium text-slate-700">Message Content</span>
+            <span class="block text-sm font-medium text-slate-700" dir="rtl">محتوى الرسالة</span>
+          </div>
+          
           <textarea type="text" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="user_message" placeholder="Type Your Message Here"></textarea>
 
         </label>
@@ -43,7 +55,11 @@
       <!-- Files Uploaded -->
       <div class="relative mb-6" data-te-input-wrapper-init>
         <label class="block">
-          <span class="block text-sm font-medium text-slate-700">Files Uploader</span>
+          <div class="flex justify-between">
+            <span class="block text-sm font-medium text-slate-700">Files Uploader</span>
+            <span class="block text-sm font-medium text-slate-700" dir="rtl">تحميل الملفات</span>
+          </div>
+          
           <input type="file" class="w-full border-2 border-slate-500 border-solid px-2 py-2 rounded-lg focus:border-green-300 " name="files" multiple>
 
         </label>

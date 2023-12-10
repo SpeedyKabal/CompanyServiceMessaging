@@ -244,7 +244,7 @@ def fetch_new_messages_for_notification(request):
         return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})
     
 
-
+@authenticated_user
 def inbox(request):
     try:
         allMessages = Messages.objects.filter(sender = request.user)
@@ -259,6 +259,6 @@ def inbox(request):
     }
     return render(request, "CSM/inbox.html", context)
 
-def test(request):
-    allUser = Employee.objects.all
-    return render(request, "CSM/test.html")
+def allUserProfiles(request):
+    allUser = User.objects.all()
+    return render(request, "CSM/allUsersPage.html", {'users' : allUser})
