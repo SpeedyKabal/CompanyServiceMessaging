@@ -28,8 +28,8 @@ class Employee(models.Model):
     gender = models.CharField(max_length=6, null=True, choices=GENDER)
     phone = models.CharField(max_length=10, null=True, blank=True)
     adress = models.CharField(max_length=128, null=True, blank=True)
-    position = models.CharField(max_length=64, null=True, choices=[(key, value['en']) for key, value in POSITION.items()])
-    birthday = models.DateField(null=True)
+    position = models.CharField(max_length=64, null=True, choices=[(key, value['en']) for key, value in POSITION.items()], blank=True)
+    birthday = models.DateField(null=True, blank=True)
     profile_pic = models.ImageField(null=True,blank=True, default='profile_pic.png')
 
     def get_arabic_position(self):

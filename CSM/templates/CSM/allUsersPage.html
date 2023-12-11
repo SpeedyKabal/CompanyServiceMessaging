@@ -9,25 +9,20 @@
     <section class="flex flex-1 flex-col justify-center gap-5">
         {% for user in users %}
         
-            <a class="flex items-center mx-40 border-2 rounded-lg border-amber-600 shadow-red-200 shadow-xl w-3/4 justify-start cursor-pointer hover:bg-green-100 overflow-hidden"
+            <a class="flex items-center mx-[5rem] border-2 rounded-lg border-amber-600 shadow-red-200 shadow-xl w-3/4 justify-start cursor-pointer hover:bg-green-100 overflow-hidden"
                 href="/{{user.username}}"
                 target="_blank">
                 <img src="{{user.employee.profile_pic.url}}" alt="{{user.last_name}} {{user.first_name}}"  class="w-20 h-20 overflow-hidden">
-                <div class="grid grid-flow-col grid-col-4 w-3/4">
-                    <span class="px-4 mx-4 underline-offset-2">{{user.last_name}}</span>
-                    <span class="px-4 mx-4 underline-offset-2">{{user.first_name}}</span>
-                    <span class="px-4 mx-4 underline-offset-2 col-span-2">{{user.employee.get_english_position}}</span>
+                <div class="grid grid-flow-col grid-col-5 w-3/4">
+                    <span class="px-4 mx-4 col-span-1">{{user.last_name}}</span>
+                    <span class="px-4 mx-4 col-span-1">{{user.first_name}}</span>
+                    <span class="px-4 mx-4 col-span-3">{{user.employee.get_english_position}}</span>
                 </div>
 
             </a>
             
         {% endfor %}
     </section>
-
-
-
-
-
 
 
     {% include "CSM/include/footer.html" %}

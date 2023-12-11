@@ -12,7 +12,7 @@
             <section class="flex justify-center flex-1">
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
-                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-blue-100 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth sender-container">
+                <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-cyan-500 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth sender-container">
                     {% if messages  != 0 %}
                         {% for message in messages %}
                             {% if message.id in unreaded %}
@@ -48,22 +48,22 @@
                 <!-- Message Container -->
                 <div class="w-[80%] min-h-[26rem] max-h-[27rem] flex flex-col">
                     <!-- Title of The Message -->
-                    <div class="flex justify-center w-full h-[10%] border-b-2 border-solid border-slate-400 px-2 mx-2 bg-blue-100 drop-shadow-2xl">
+                    <div class="flex justify-center w-full h-[10%] border-b-2 border-solid border-slate-400 px-2 mx-2 bg-cyan-500 drop-shadow-2xl">
                         {% comment %} {% for message in messages %} {% endcomment %}
-                            <span class="message-title px-2 mx-2 text-red-500"></span>
+                            <span class="message-title px-2 mx-2 my-2 text-yellow-300 text-xl"></span>
                         {% comment %} {% endfor %} {% endcomment %}
                     </div>
                     <!-- The Message -->
-                    <div class="w-full px-2 py-2 mx-2 h-[80%] grid content-between">
+                    <div class="w-full px-2 py-2 mx-2 my-2 h-[80%] grid content-between bg-gradient-to-r from-slate-200 to-slate-100 ">
                         {% comment %} {% for message in messages %} {% endcomment %}
-                            <p class="message-content"></p>
-                            <div class="files flex border-2 border-slate-300 bg-green-100 max-w-[75%] min-w-[15rem] min-h-[3rem]">
+                            <p class="message-content text-2xl overflow-y-auto whitespace-pre-line"></p>
+                            <div class="files flex border-2 border-slate-300 bg-cyan-100 max-w-[75%] min-w-[15rem] min-h-[3rem]">
                             </div>
                         {% comment %} {% endfor %}  {% endcomment %}
                     </div>
                     <!-- Information About the Message -->
-                    <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-blue-100 drop-shadow-2xl">
-                        <span class="message-date text-red-500"></span>
+                    <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 my-2 border-t-2 border-slate-400 bg-cyan-500 drop-shadow-2xl">
+                        <span class="message-date text-yellow-300"></span>
                     </div>
                 </div>
 
@@ -129,8 +129,9 @@
                             var filesList = $('<ul class="flex gap-5 overflow-x-scroll"></ul>');
 
                             data.fichiers.forEach(function(urlfile) {
-                                var listItem = $('<li class=\"bg-red-100 flex items-center px-2 mx-2 gap-1\"><i class=\"fa-regular fa-file\"></i></li>');
-                                var fileLink = $('<a class=\"cursor-pointer\"></a>', {
+                                var listItem = $('<li class="bg-red-100 flex items-center px-2 mx-2 gap-1"><i class="fa-regular fa-file"></i></li>');
+                                var fileLink = $('<a></a>', {
+                                    class : "cursor-pointer text-2xl",
                                     href: urlfile,
                                     target: '_blank',
                                     text: urlfile.split('/').pop() // Display the file name
