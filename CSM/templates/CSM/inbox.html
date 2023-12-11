@@ -9,7 +9,12 @@
 {% block content %}
     {% include "CSM/include/nav.html" %}
     
-            <section class="flex justify-center flex-1">
+            <section class="flex justify-center flex-1 flex-col items-center my-3">
+                <div class="flex gap-5">
+                    <input type="date" class="w-[15rem] border-2 border-green-300 bg-cyan-300 text-lg" name="date_from" id="date-from">
+                    <input type="date" class="w-[15rem] border-2 border-green-300 bg-cyan-300 text-lg" name="date_to" id="date-to">
+                    <button type="button" class="filterbtn border-2 bg-blue-500 rounded-lg text-green-100 hover:text-blue-100 hover:bg-green-500 transition-colors duration-500 w-[5rem] text-lg">Filter</button>
+                </div>
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
                 <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-cyan-500 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth sender-container">
@@ -17,7 +22,8 @@
                         {% for message in messages %}
                             {% if message.id in unreaded %}
                                 <a class="bg-red-200 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
-                                    data-message-id="{{ message.id }}">
+                                    data-message-id="{{ message.id }}"
+                                    data-message-date="{{ message.date_created|date:'Y-m-d'}}">
                                     <!-- Image of The Sender -->
                                     <div class="lg:flex lg:flex-col lg:items-center lg:justify-center lg:mx-2 hidden">
                                         <img src="{{message.reciever.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
@@ -29,8 +35,9 @@
                                     </div>
                                 </a>
                             {% else %}
-                                <a class="bg-green-100 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
-                                    data-message-id="{{ message.id }}">
+                                <a class="bg-yellow-100 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
+                                    data-message-id="{{ message.id }}"
+                                    data-message-date="{{ message.date_created|date:'Y-m-d'}}">
                                     <!-- Image of The Sender -->
                                     <div class="lg:flex lg:flex-col lg:items-center lg:justify-center lg:mx-2 hidden">
                                         <img src="{{message.reciever.employee.profile_pic.url}}" class="bg-red-600 border border-solid border-1 border-slate-600 rounded-full w-[50px] h-[50px]">
@@ -78,6 +85,8 @@
         $(document).ready(function () {
             
             var loading = $(".loading-overlay");
+
+
             function getCookie(name) {
                 var cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
@@ -156,6 +165,21 @@
                         loading.css("display", "none");
                     }
                 });
+            });
+
+            $(".filterbtn").click(function(){
+                var fromDate = $('#date-from').val();
+                var toDate = $('#date-to').val();
+                $(".user").each(function(){
+                    if($(this).data('message-date') >= fromDate && $(this).data('message-date') <= toDate ){
+                        $(this).addClass("sm:flex");
+                        $(this).removeClass("hidden");
+                    }else{
+                        $(this).addClass("hidden");
+                        $(this).removeClass("sm:flex");
+                    }
+                });
+
             });
             
         });

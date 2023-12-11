@@ -162,17 +162,6 @@ def sendMessage(request):
     }
     return render(request, "CSM/send_message.html", context)
 
-'''
-@csrf_exempt  
-def submit_form(request):
-    if request.method == 'POST':
-        data_from_frontend = request.POST.get('data_from_frontend')
-        pk = Messages.objects.get(id=data_from_frontend)
-        message = pk.message
-        return JsonResponse({'status': 'success', 'processed_data': message})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-'''
 
 @csrf_exempt 
 def markItRead(request):
@@ -259,6 +248,8 @@ def inbox(request):
     }
     return render(request, "CSM/inbox.html", context)
 
+
+@authenticated_user
 def allUserProfiles(request):
     allUser = User.objects.all()
     return render(request, "CSM/allUsersPage.html", {'users' : allUser})
