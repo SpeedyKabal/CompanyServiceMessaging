@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 POSITION = {
+    'None' : {'en':'Not Specified Yet','ar':'لم يتم التحديد بعد'},
     'director' : {'en':'Director','ar':'مدير المؤسسة'},
     'statistique' : {'en':'Ingénieur etat en statistique','ar':'مهندس دولة في الإحصائيات'},
     'informatique' : {'en':'Ingénieur etat en informatique','ar':'مهندس دولة في الإعلام الآلي'},
@@ -16,6 +17,7 @@ POSITION = {
     'Agent_Adm' : {'en':'Agent d`administration','ar':'عون إدارة'},
     'Agent_Bureau' : {'en':'Agent de bureau','ar':'عون مكتب'},
     'Medecin_generaliste_chef' : {'en':'Médecin généraliste en chef de santé publique','ar':'طبيب عام رئيس في الصحة العمومية'},
+    'Assistant ing nv 2 en informatique' : {'en':'Assistant ingénieur de niveau 2 en informatique','ar':'رتبة مساعد مهندس مستوى 2 في الإعلام الآلي'},
 }
 
 class Employee(models.Model):
@@ -28,7 +30,7 @@ class Employee(models.Model):
     gender = models.CharField(max_length=6, null=True, choices=GENDER)
     phone = models.CharField(max_length=10, null=True, blank=True)
     adress = models.CharField(max_length=128, null=True, blank=True)
-    position = models.CharField(max_length=64, null=True, choices=[(key, value['en']) for key, value in POSITION.items()], blank=True)
+    position = models.CharField(max_length=64, null=True, choices=[(key, value['en']) for key, value in POSITION.items()], blank=True, default='')
     birthday = models.DateField(null=True, blank=True)
     profile_pic = models.ImageField(null=True,blank=True, default='profile_pic.png')
 

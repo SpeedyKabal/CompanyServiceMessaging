@@ -766,8 +766,8 @@ video {
   margin-right: 2.25rem;
 }
 
-.mr-\[15\%\] {
-  margin-right: 15%;
+.mr-auto {
+  margin-right: auto;
 }
 
 .mt-1 {
@@ -784,10 +784,6 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
-}
-
-.mr-auto {
-  margin-right: auto;
 }
 
 .block {
@@ -864,10 +860,6 @@ video {
 
 .max-h-\[27rem\] {
   max-height: 27rem;
-}
-
-.max-h-\[5rem\] {
-  max-height: 5rem;
 }
 
 .max-h-\[3rem\] {
@@ -1043,10 +1035,6 @@ video {
   flex-wrap: wrap;
 }
 
-.content-center {
-  align-content: center;
-}
-
 .content-between {
   align-content: space-between;
 }
@@ -1085,10 +1073,6 @@ video {
 
 .gap-5 {
   gap: 1.25rem;
-}
-
-.gap-6 {
-  gap: 1.5rem;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -1828,6 +1812,11 @@ video {
   --tw-ring-inset: inset;
 }
 
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .drop-shadow {
   --tw-drop-shadow: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -1872,6 +1861,16 @@ video {
 
 .ease-in-out {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.placeholder\:text-white::-moz-placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.placeholder\:text-white::placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .before\:pointer-events-none::before {
@@ -2230,6 +2229,16 @@ video {
 
 .focus\:ring-opacity-50:focus {
   --tw-ring-opacity: 0.5;
+}
+
+.focus\:placeholder\:text-black:focus::-moz-placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.focus\:placeholder\:text-black:focus::placeholder {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity));
 }
 
 .active\:text-neutral-800:active {
