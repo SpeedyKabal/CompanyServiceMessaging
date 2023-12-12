@@ -14,10 +14,10 @@
         <div class="profile border-2 border-slate-300 mx-4 px-2 my-4 w-80 h-80 max-w-md max-h-md">
                 <img src="{{request.user.employee.profile_pic.url}}" alt="profile_picture" class="w-full h-full object-cover">
         </div>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" class="grid justify-items-center">
         {% csrf_token %}
         <div class="container lg:flex gap-3 mx-4 px-2 my-4 grid justify-center">
-                <div class="flex w-full flex-col gap-6 ">
+                <div class="grid w-full gap-3">
                         <!-- Username -->
                         <div class="relative h-10 w-full min-w-[200px]">
                                 <input
@@ -87,7 +87,7 @@
                                 </label>
                         </div>
                 </div>
-                <div class="flex w-full flex-col gap-6 ">
+                <div class="grid w-full gap-3"">
                         <!-- Gender -->
                         <div class="relative h-10 w-full min-w-[200px]">
                                 <select id="id_gender" name="gender" class="peer h-full w-full rounded-[7px] border border-blue-gray-200 bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-teal-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
@@ -160,7 +160,7 @@
         </div>
         <button 
         type="submit"
-        class="w-full py-2 ml-5 bg-blue-400 text-slate-800 rounded-lg hover:bg-green-500 transition-colors duration-500">
+        class="w-[80%] max-h-[3rem] py-2 mx-2 my-2 bg-blue-400 text-slate-800 rounded-lg hover:bg-green-500 transition-colors duration-500">
         Update Profile <i class="fa-solid fa-floppy-disk"></i></button>
         </form>
     </div>
