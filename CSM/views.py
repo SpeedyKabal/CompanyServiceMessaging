@@ -11,7 +11,9 @@ from .decorators import unauthenticated_user, authenticated_user
 from .models import Employee, Messages, Files
 from .forms import EmployeeForm, UserForm
 from django.utils import timezone
-import re
+import re, os, uuid
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -82,15 +84,7 @@ def home(request):
         'messages' : allMessages,
         'unreaded' : unread_messages
     }
-    '''
-    if request.method == 'POST':
-        print("request Triggered")
-        if 'user-message' in request.POST:
-            pk = request.POST.get('user-message')
-            msgReaded = Messages.objects.get(id=pk)
-            msgReaded.is_read = True
-            msgReaded.save()
-    '''
+
 
     return render(request, "CSM/home.html", context)
 
@@ -153,7 +147,7 @@ def sendMessage(request):
         sent_message = Messages.objects.create(sender=sender, reciever=reciever, message=message, title=messageTitle)
         sent_message.save()
         for fichier in uploaded_files:
-            Files.objects.create(message_id=sent_message, file = fichier)
+            Files.objects.create(message_id=sent_message, file=fichier)
 
         return redirect("CSM:home")
     context = {

@@ -64,7 +64,7 @@
                     <div class="w-full px-2 py-2 mx-2 my-2 h-[80%] grid content-between bg-gradient-to-r from-slate-200 to-slate-100 ">
                         {% comment %} {% for message in messages %} {% endcomment %}
                             <p class="message-content text-2xl overflow-y-auto whitespace-pre-line"></p>
-                            <div class="files flex border-2 border-slate-300 bg-cyan-100 max-w-[75%] min-w-[15rem] min-h-[3rem]">
+                            <div class="files flex border-2 border-slate-300 bg-cyan-100">
                             </div>
                         {% comment %} {% endfor %}  {% endcomment %}
                     </div>
@@ -135,12 +135,12 @@
                         filesContainer.empty(); // Clear previous content
 
                         if (data.fichiers && data.fichiers.length > 0) {
-                            var filesList = $('<ul class="flex gap-5 overflow-x-scroll"></ul>');
+                            var filesList = $('<ul class="grid gap-2 overflow-y-scroll"></ul>');
 
                             data.fichiers.forEach(function(urlfile) {
                                 var listItem = $('<li class="bg-red-100 flex items-center px-2 mx-2 gap-1"><i class="fa-regular fa-file"></i></li>');
                                 var fileLink = $('<a></a>', {
-                                    class : "cursor-pointer text-2xl",
+                                    class : "cursor-pointer text-sm truncate",
                                     href: urlfile,
                                     target: '_blank',
                                     text: urlfile.split('/').pop() // Display the file name

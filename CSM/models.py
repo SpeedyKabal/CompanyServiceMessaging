@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+import os
+from datetime import datetime
 
 POSITION = {
     'None' : {'en':'Not Specified Yet','ar':'لم يتم التحديد بعد'},
@@ -71,9 +73,24 @@ class Messages(models.Model):
         return self.sender.first_name
 
 
+def generate_filename(instance, filename):
+    # Get the current date and time
+    current_datetime = datetime.now()
+
+    # Get the file extension
+    _, file_extension = os.path.splitext(filename)
+
+    # Generate a unique filename based on the current date and time
+    unique_filename = f"{current_datetime.strftime('%Y%m%d%H%M%S')}{file_extension}"
+
+    # Return the generated filename
+    return unique_filename
+
+
+
 class Files(models.Model):
     message_id = models.ForeignKey(Messages, related_name='fichiers',on_delete=models.CASCADE)
-    file = models.FileField(upload_to='UploadedFiles/')
+    file = models.FileField(upload_to=generate_filename)
     date_created = models.DateTimeField(auto_now_add=True)
 
 

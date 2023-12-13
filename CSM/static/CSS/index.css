@@ -6,3 +6,9 @@ body{
 
 
 
+.files{
+    width: 15rem;
+    height: 5rem;
+    overflow: hidden;
+}
+
