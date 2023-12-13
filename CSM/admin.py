@@ -25,7 +25,8 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 
 class MessagesAdmin(admin.ModelAdmin):
-    list_filter = ['sender__last_name', 'reciever__last_name', 'date_created']
+    list_filter = ['sender__last_name', 'reciever__last_name',
+                     'date_created', 'sender_del', 'reciever_del', 'responses']
     list_display = ['get_sender','get_message','get_reciever', 'date_created' ,'is_read']
 
     def get_sender(self, obj):

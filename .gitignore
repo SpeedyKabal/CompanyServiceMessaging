@@ -1,2 +1,3 @@
 # Directory for storing generated media files
 media/
+db.sqlite3
