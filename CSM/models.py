@@ -62,6 +62,10 @@ class Messages(models.Model):
     reciever = models.ForeignKey(User, null=True, related_name='recieve_messages', on_delete=models.SET_NULL)
     date_created = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+    sender_del = models.BooleanField(default=False)
+    reciever_del = models.BooleanField(default=False)
+    parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='responses')
+
 
     def __str__(self):
         return self.sender.first_name
