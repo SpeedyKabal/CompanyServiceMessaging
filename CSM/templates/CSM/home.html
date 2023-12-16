@@ -97,13 +97,22 @@
                         {% comment %} {% endfor %} {% endcomment %}
                     </div>
                     <!-- The Message -->
-                    <div class="w-full px-2 py-2 mx-2 h-[80%] grid content-between">
-                        {% comment %} {% for message in messages %} {% endcomment %}
-                            <p class="message-content text-2xl overflow-y-auto whitespace-pre-line"></p>
-                            <div class="files flex border-2 border-slate-300 bg-cyan-100">
-                            </div>
-                        {% comment %} {% endfor %}  {% endcomment %}
+                    <div class="chat-container flex h-[80%] relative" data-message-id="">
+                        <div class="Conversation w-5/6 px-2 py-2 mx-2 h-[85%] grid gap-auto justify-items-stretch overflow-scroll relative">
+
+  
+                                
+
+
+                        </div>
+                        <div class="flex items-center absolute left-0 bottom-1 w-[95%]">
+                            <input type="text" placeholder="Type the Response Here" class="w-full border-2 border-slate-400 h-10 rounded-lg px-2 mx-2" name="response" id="resposeID">
+                        </div>
+                        <div class="files w-1/12 flex border-2 border-slate-300 bg-cyan-100 text-xs">
+                        </div>
+                        
                     </div>
+
                     <!-- Information About the Message -->
                     <div class="w-full h-[10%] flex items-center justify-center px-2 mx-2 border-t-2 border-slate-400 bg-cyan-500 drop-shadow-2xl">
                         <span class="message-date text-yellow-300"></span>
@@ -119,7 +128,14 @@
 
     <script>
         $(document).ready(function () {
-            
+            var chatContainer = $('.Conversation');
+
+            var myMessageContainer = $('<div class="message w-2/3 bg-blue-100 justify-self-start rounded-lg px-2"></div>');
+            var myMessageP = $('<p class="message-content text-md"></p>');
+
+            var myResponseContainer = $('<div class="response flex w-2/3 justify-self-end bg-slate-100 rounded-lg px-2"></div>');
+            var myResponseP = $('<p class="response-content text-2xl overflow-y-auto whitespace-pre-line"></p>');
+
             var loading = $(".loading-overlay");
             function getCookie(name) {
                 var cookieValue = null;
@@ -145,6 +161,7 @@
                     url: '{% url "CSM:markItRead" %}',
                     data: {'message_id': messageId},
                     success: function (data) {
+                        chatContainer.html('');
                         // Make the Date in Readable Format -start-
                         var formattedDate = new Date(data.date);
                         var options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
@@ -152,17 +169,24 @@
                         // -end-
                         // a function to check whether the message in arabic or Not -Start-
                         function containsArabicCharacters(str) {
-                        var arabicRegex = /[\u0600-\u06FF]/;
-                        return arabicRegex.test(str);
+                            var arabicRegex = /[\u0600-\u06FF]/;
+                            return arabicRegex.test(str);
                         }
                         if (containsArabicCharacters(data.content)) {
-                            $('.message-content').html(data.content);
-                            $('.message-content').attr('dir', 'rtl');
+                            chatContainer.append(myMessageContainer);
+                            myMessageContainer.append(myMessageP);
+                            myMessageP.attr('dir', 'rtl');
+                            myMessageP.html(data.content);
+                            console.log('arabic');
                         } else {
-                            $('.message-content').html(data.content);
-                            $('.message-content').attr('dir', 'ltr');
+                            chatContainer.append(myMessageContainer);
+                            myMessageContainer.append(myMessageP);
+                            myMessageP.attr('dir', 'ltr');
+                            myMessageP.html(data.content);
+                            console.log('english');
                         }
                         // -end-
+                        $(".chat-container").attr("data-message-id", data.messagepk);
                         $('.message-title').html(data.title);
                         $('.message-date').html(formattedDateString);
                         var filesContainer = $('.files');
@@ -174,7 +198,7 @@
                             data.fichiers.forEach(function(urlfile) {
                                 var listItem = $('<li class=\"bg-red-100 flex items-center px-2 mx-2 gap-1\"><i class=\"fa-regular fa-file\"></i></li>');
                                 var fileLink = $('<a></a>', {
-                                    class : "cursor-pointer text-xl",
+                                    class : "cursor-pointer text-xs",
                                     href: urlfile,
                                     target: '_blank',
                                     text: urlfile.split('/').pop() // Display the file name
@@ -188,6 +212,27 @@
                             filesContainer.html('No attached files');
                         }
 
+                        // Check if the message has responses
+                        function add_response(ele){
+                            var newMessageContainer = $('<div class="w-2/3 bg-blue-100 justify-self-start rounded-lg px-2"></div>');
+                            var newMessageP = $('<p class="text-md"></p>');
+                            var newMyResponseContainer = $('<div class="flex w-2/3 justify-self-end bg-slate-100 rounded-lg px-2"></div>');
+                            var newMyResponseP = $('<p class="text-2xl overflow-y-auto whitespace-pre-line"></p>');
+                            if(ele.sender === '{{request.user.first_name}} {{request.user.last_name}}'){
+                                chatContainer.append(newMessageContainer);
+                                newMessageContainer.append(newMessageP);
+                                newMessageP.html(ele.message);
+                            }else{
+                                chatContainer.append(newMyResponseContainer);
+                                newMyResponseContainer.append(newMyResponseP);
+                                newMyResponseP.html(ele.message);
+                            }
+                            if(ele.parent_message !=null) {add_response(ele.parent_message);}
+                            
+                        }
+                        if (data.parent_message) {
+                            add_response(data.parent_message);                            
+                        }
                     },
                     error: function (xhr, status, error) {
                         $('.message-content').html('Error submitting the form');
@@ -238,7 +283,41 @@
             };
             setInterval(fetchNewMessages, 10000);
 
-        })
+            $("#resposeID").keypress(function (e) {
+                if (e.which === 13) { // 13 is the keycode for "Enter"
+                    e.preventDefault();
+                    submitResponse();
+                }
+            });
+
+        // ... Your existing JavaScript code ...
+
+            function submitResponse() {
+                var messageId = $('.chat-container').data('message-id');  // Assuming you want to respond to the selected message
+                var responseContent = $('#resposeID').val();
+                var csrfToken = getCookie('csrftoken');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "CSM:submitResponse" %}',  // Update with your actual URL name
+                    data: {
+                        'message_id': messageId,
+                        'response': responseContent,
+                        'csrfmiddlewaretoken': csrfToken,
+                    },
+                    success: function (data) {
+                        // Update the response content in the HTML
+                        $('.response-content').html(data.message_content);
+                        // Clear the response input after submission
+                        $('#response-input').val('');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error submitting response:', error);
+                    }
+                });
+            }   
+
+        });
     </script>
     
 {% endblock %}

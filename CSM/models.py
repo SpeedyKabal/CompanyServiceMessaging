@@ -70,7 +70,30 @@ class Messages(models.Model):
 
 
     def __str__(self):
-        return self.sender.first_name
+        return self.sender.first_name + " " + self.sender.last_name
+    
+    def get_message_info(self):
+        """
+        Recursively traverse parent messages and collect information.
+        """
+        message_info = {
+            'id': self.pk,
+            'sender': self.sender.first_name + " " + self.sender.last_name,
+            'reciever' : self.reciever.first_name + " " + self.reciever.last_name,
+            'message': self.message,
+            'date_created': self.date_created.isoformat(),
+            'is_read': self.is_read,
+            'sender_del': self.sender_del,
+            'reciever_del': self.reciever_del,
+        }
+
+        # Check if there is a parent message
+        if self.parent_message:
+            # Recursive call to get parent message info
+            parent_info = self.parent_message.get_message_info()
+            message_info['parent_message'] = parent_info
+
+        return message_info
 
 
 def generate_filename(instance, filename):

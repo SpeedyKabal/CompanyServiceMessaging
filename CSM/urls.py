@@ -10,6 +10,7 @@ urlpatterns = [
     path('home/', views.home, name="home"),
     path('inbox/', views.inbox, name="inbox"),
     path('markItRead/', views.markItRead, name='markItRead'),
+    path('submitResponse/', views.submitResponse, name='submitResponse'),
     path('getnewmessages/', views.fetch_new_messages, name='newMessages'),
     path('getMyMessages/', views.getMyMessages, name='MyMessages'),
     path('getnewmessagesNotifications/', views.fetch_new_messages_for_notification, name='newMessagesNotification'),

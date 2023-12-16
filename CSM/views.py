@@ -73,6 +73,7 @@ def signMeOut(request):
 
 @authenticated_user
 def home(request):
+
     try:
         allMessages = Messages.objects.filter(reciever = request.user).select_related('sender__employee')    
         unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
@@ -159,6 +160,7 @@ def sendMessage(request):
 
 @csrf_exempt 
 def markItRead(request):
+    responces = None
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         message_id = request.POST.get('message_id')
         try:
@@ -170,17 +172,52 @@ def markItRead(request):
         if not (message.is_read):
             message.is_read = True
             message.save()
-        
+
+        if message.parent_message:
+            responces = Messages.get_message_info(message)
+
         context = {
+            'messagepk':message.pk,
             'content': message.message,
             'title': message.title,
             'date': message.date_created, 
+            'parent_message' : responces,
             'fichiers' : file_urls,
         }
         return JsonResponse(context)
     else:
         return JsonResponse({'error':'Invalid request'})
-    
+
+
+@csrf_exempt 
+def submitResponse(request):
+    if request.method == 'POST' and 'response' in request.POST:
+        message_id = request.POST.get('message_id')
+        response_content = request.POST.get('response')
+
+        # Get the message object
+        message = get_object_or_404(Messages, id=message_id)
+
+        # Save the response in the database
+        response_message = Messages.objects.create(
+            sender=request.user,
+            reciever=message.sender,
+            parent_message=message,
+            message=response_content, 
+        )
+
+        # You can also update other fields like sender_del, reciever_del, etc.
+
+        return JsonResponse({
+            'responseContent': response_message.id,
+            'sender': response_message.sender.username,  # Include any other sender details you need
+            'message_content': response_message.message,
+            'is_read': response_message.is_read,
+        })
+
+    return JsonResponse({'error': 'Invalid request'})
+
+
 
 @csrf_exempt 
 def getMyMessages(request):
