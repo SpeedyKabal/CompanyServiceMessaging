@@ -17,7 +17,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.db.models import Q
 # Create your views here.
 
 @unauthenticated_user
@@ -75,7 +75,7 @@ def signMeOut(request):
 def home(request):
 
     try:
-        allMessages = Messages.objects.filter(reciever = request.user).select_related('sender__employee')    
+        allMessages = Messages.objects.filter(Q(reciever = request.user, parent_message=None) | Q(sender= request.user, parent_message=None)).select_related('sender__employee')    
         unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
     except Messages.DoesNotExist:
         allMessages = 0
@@ -173,14 +173,11 @@ def markItRead(request):
             message.is_read = True
             message.save()
 
-        if message.parent_message:
-            responces = Messages.get_message_info(message)
-
+        if message:
+            child = message.get_smallest_child()
+            responces = child.get_message_info()
+          
         context = {
-            'messagepk':message.pk,
-            'content': message.message,
-            'title': message.title,
-            'date': message.date_created, 
             'parent_message' : responces,
             'fichiers' : file_urls,
         }
@@ -194,18 +191,39 @@ def submitResponse(request):
     if request.method == 'POST' and 'response' in request.POST:
         message_id = request.POST.get('message_id')
         response_content = request.POST.get('response')
+        senderId = request.POST.get('senderId')
+        receiverId = request.POST.get('receiverId')
+        print("********************************")
+        print(senderId)
+        print("********************************")
+        print(receiverId)
+        sender_user=User.objects.get(pk=senderId)
+        receiver_user=User.objects.get(pk=receiverId)
+        print("**********Sender_user****************")
+        print(sender_user)
+        print("**********receriver_user****************")
+        print(receiver_user)
+        final_receiver= None
+        if request.user == receiver_user:
+            final_receiver = sender_user
+        if request.user == sender_user:
+            final_receiver = receiver_user
+
+        print("**********final****************")
+        print(final_receiver)
 
         # Get the message object
         message = get_object_or_404(Messages, id=message_id)
-
+        child = message.get_smallest_child()
         # Save the response in the database
         response_message = Messages.objects.create(
             sender=request.user,
-            reciever=message.sender,
-            parent_message=message,
+            reciever=final_receiver,
+            parent_message=child,
             message=response_content, 
         )
-
+        child.child_message = response_message
+        child.save()
         # You can also update other fields like sender_del, reciever_del, etc.
 
         return JsonResponse({

@@ -97,7 +97,7 @@
                         {% comment %} {% endfor %} {% endcomment %}
                     </div>
                     <!-- The Message -->
-                    <div class="chat-container flex h-[80%] relative" data-message-id="">
+                    <div class="chat-container flex h-[80%] relative" data-message-id="" data-sender-id="" data-receiver-id="">
                         <div class="Conversation w-5/6 px-2 py-2 mx-2 h-[85%] grid gap-auto justify-items-stretch overflow-scroll relative">
 
   
@@ -172,22 +172,14 @@
                             var arabicRegex = /[\u0600-\u06FF]/;
                             return arabicRegex.test(str);
                         }
-                        if (containsArabicCharacters(data.content)) {
-                            chatContainer.append(myMessageContainer);
-                            myMessageContainer.append(myMessageP);
-                            myMessageP.attr('dir', 'rtl');
-                            myMessageP.html(data.content);
-                            console.log('arabic');
-                        } else {
-                            chatContainer.append(myMessageContainer);
-                            myMessageContainer.append(myMessageP);
-                            myMessageP.attr('dir', 'ltr');
-                            myMessageP.html(data.content);
-                            console.log('english');
-                        }
+                        /*
+
+                        */
                         // -end-
-                        $(".chat-container").attr("data-message-id", data.messagepk);
-                        $('.message-title').html(data.title);
+                        $(".chat-container").attr("data-message-id", data.parent_message.id);
+                        $(".chat-container").attr("data-sender-id", data.parent_message.senderId);
+                        $(".chat-container").attr("data-receiver-id", data.parent_message.recieverid);
+                        $('.message-title').html(data.parent_message.title);
                         $('.message-date').html(formattedDateString);
                         var filesContainer = $('.files');
                         filesContainer.empty(); // Clear previous content
@@ -211,8 +203,9 @@
                         } else {
                             filesContainer.html('No attached files');
                         }
-
+                        var counter =0;
                         // Check if the message has responses
+
                         function add_response(ele){
                             var newMessageContainer = $('<div class="w-2/3 bg-blue-100 justify-self-start rounded-lg px-2"></div>');
                             var newMessageP = $('<p class="text-md"></p>');
@@ -222,10 +215,14 @@
                                 chatContainer.append(newMessageContainer);
                                 newMessageContainer.append(newMessageP);
                                 newMessageP.html(ele.message);
+                                console.log(++counter +" If Statement " + ele.id );
+                                console.log( ele.sender + ele.id );
                             }else{
                                 chatContainer.append(newMyResponseContainer);
                                 newMyResponseContainer.append(newMyResponseP);
                                 newMyResponseP.html(ele.message);
+                                console.log("Else Statement " + ele.id );
+                                console.log(ele.sender + ele.id  );
                             }
                             if(ele.parent_message !=null) {add_response(ele.parent_message);}
                             
@@ -233,6 +230,18 @@
                         if (data.parent_message) {
                             add_response(data.parent_message);                            
                         }
+                        // if (containsArabicCharacters(data.content)) {
+                        //     chatContainer.append(myMessageContainer);
+                        //     myMessageContainer.append(myMessageP);
+                        //     myMessageP.attr('dir', 'rtl');
+                        //     myMessageP.html(data.content);
+                        //     console.log('arabic');
+                        // } else {
+                        //     chatContainer.append(myMessageContainer);
+                        //     myMessageContainer.append(myMessageP);
+                        //     myMessageP.attr('dir', 'ltr');
+                        //     myMessageP.html(data.content);
+                        // }
                     },
                     error: function (xhr, status, error) {
                         $('.message-content').html('Error submitting the form');
@@ -287,14 +296,18 @@
                 if (e.which === 13) { // 13 is the keycode for "Enter"
                     e.preventDefault();
                     submitResponse();
+                    $("#resposeID").val('');
                 }
             });
 
         // ... Your existing JavaScript code ...
 
             function submitResponse() {
-                var messageId = $('.chat-container').data('message-id');  // Assuming you want to respond to the selected message
+                var messageId = $('.chat-container').data('message-id');
+                var senderId= $('.chat-container').data('sender-id');   // Assuming you want to respond to the selected message
+                var receiverId= $('.chat-container').data('receiver-id');   // Assuming you want to respond to the selected message
                 var responseContent = $('#resposeID').val();
+
                 var csrfToken = getCookie('csrftoken');
 
                 $.ajax({
@@ -303,6 +316,8 @@
                     data: {
                         'message_id': messageId,
                         'response': responseContent,
+                        'senderId':senderId,
+                        'receiverId':receiverId,
                         'csrfmiddlewaretoken': csrfToken,
                     },
                     success: function (data) {

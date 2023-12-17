@@ -67,24 +67,29 @@ class Messages(models.Model):
     sender_del = models.BooleanField(default=False)
     reciever_del = models.BooleanField(default=False)
     parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='responses')
+    child_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='child')
 
 
     def __str__(self):
         return self.sender.first_name + " " + self.sender.last_name
     
     def get_message_info(self):
+        
         """
         Recursively traverse parent messages and collect information.
         """
         message_info = {
-            'id': self.pk,
-            'sender': self.sender.first_name + " " + self.sender.last_name,
-            'reciever' : self.reciever.first_name + " " + self.reciever.last_name,
-            'message': self.message,
-            'date_created': self.date_created.isoformat(),
-            'is_read': self.is_read,
-            'sender_del': self.sender_del,
-            'reciever_del': self.reciever_del,
+                        'id': self.pk,
+                        'sender': self.sender.first_name + " " + self.sender.last_name,
+                        'senderId': self.sender.pk,
+                        'reciever' : self.reciever.first_name + " " + self.reciever.last_name,
+                        'recieverid' : self.reciever.pk,
+                        'message': self.message,
+                        'title':self.title,
+                        'date_created': self.date_created.isoformat(),
+                        'is_read': self.is_read,
+                        'sender_del': self.sender_del,
+                        'reciever_del': self.reciever_del,
         }
 
         # Check if there is a parent message
@@ -94,6 +99,13 @@ class Messages(models.Model):
             message_info['parent_message'] = parent_info
 
         return message_info
+    
+    def get_smallest_child(self):
+        if self.child_message is None:
+            return self
+        else:
+            return self.child_message.get_smallest_child()
+
 
 
 def generate_filename(instance, filename):
