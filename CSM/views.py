@@ -75,12 +75,30 @@ def signMeOut(request):
 def home(request):
 
     try:
-        allMessages = Messages.objects.filter(Q(reciever = request.user, parent_message=None) | Q(sender= request.user, parent_message=None)).select_related('sender__employee')    
+        allMessages = Messages.objects.filter(Q(reciever = request.user,parent_message=None) | Q(sender = request.user,parent_message=None))
         unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
     except Messages.DoesNotExist:
         allMessages = 0
         unread_messages = 0
 
+    '''
+    def getOneMessage(actualmessages):
+        senderRef = None
+        recieverRef = None
+        oneRecieverMessages = None
+        for message in actualmessages:
+            sender = message.sender
+            reciever = message.reciever
+            if sender == senderRef and reciever == recieverRef:
+                oneRecieverMessages = message
+            else:
+                realAllMessages += message
+
+        
+        return realAllMessages, oneRecieverMessages
+
+    getOneMessage(allMessages)
+    '''
     context = {
         'messages' : allMessages,
         'unreaded' : unread_messages
@@ -193,24 +211,16 @@ def submitResponse(request):
         response_content = request.POST.get('response')
         senderId = request.POST.get('senderId')
         receiverId = request.POST.get('receiverId')
-        print("********************************")
-        print(senderId)
-        print("********************************")
-        print(receiverId)
+
         sender_user=User.objects.get(pk=senderId)
         receiver_user=User.objects.get(pk=receiverId)
-        print("**********Sender_user****************")
-        print(sender_user)
-        print("**********receriver_user****************")
-        print(receiver_user)
+
         final_receiver= None
         if request.user == receiver_user:
             final_receiver = sender_user
         if request.user == sender_user:
             final_receiver = receiver_user
 
-        print("**********final****************")
-        print(final_receiver)
 
         # Get the message object
         message = get_object_or_404(Messages, id=message_id)
