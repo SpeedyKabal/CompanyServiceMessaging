@@ -290,8 +290,7 @@
                     }
                 });
             };
-            setInterval(fetchNewMessages, 10000);
-
+            setInterval(fetchNewMessages, 3000);
             $("#resposeID").keypress(function (e) {
                 if (e.which === 13) { // 13 is the keycode for "Enter"
                     e.preventDefault();

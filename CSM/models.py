@@ -105,6 +105,16 @@ class Messages(models.Model):
             return self
         else:
             return self.child_message.get_smallest_child()
+        
+    def get_all_childs(self,list,current_user):
+        if self.child_message is None:
+            list.append(self)
+            return
+        else:
+            if self.sender != current_user:
+                list.append(self)
+            self.child_message.get_all_childs(list,current_user)
+
 
 
 

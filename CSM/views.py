@@ -178,18 +178,26 @@ def sendMessage(request):
 
 @csrf_exempt 
 def markItRead(request):
+    current_user = request.user
     responces = None
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         message_id = request.POST.get('message_id')
+        child_messages_l = []
         try:
             message = Messages.objects.get(id=message_id)
+            message.get_all_childs(child_messages_l,current_user)
+            [print(child_messages.message) for child_messages in child_messages_l]
+
         except Messages.DoesNotExist:
             message = 0
         files = Files.objects.filter(message_id = message_id)
         file_urls = [file.file.url for file in files]
-        if not (message.is_read):
-            message.is_read = True
-            message.save()
+        for child_message in child_messages_l:
+            if not (child_message.is_read):
+                
+                child_message.childs_is_read = True
+                child_message.is_read = True
+                child_message.save()
 
         if message:
             child = message.get_smallest_child()
@@ -232,6 +240,9 @@ def submitResponse(request):
             parent_message=child,
             message=response_content, 
         )
+        if child.sender != message.sender:
+            message.is_read = False
+            message.save()
         child.child_message = response_message
         child.save()
         # You can also update other fields like sender_del, reciever_del, etc.
