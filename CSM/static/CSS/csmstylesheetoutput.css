@@ -1088,6 +1088,10 @@ video {
   justify-self: end;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .overflow-hidden {
   overflow: hidden;
 }

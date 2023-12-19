@@ -74,12 +74,32 @@ def signMeOut(request):
 @authenticated_user
 def home(request):
 
-    try:
-        allMessages = Messages.objects.filter(Q(reciever = request.user,parent_message=None) | Q(sender = request.user,parent_message=None))
-        unread_messages = Messages.objects.filter(reciever = request.user, is_read = False).values_list('id',flat=True)
-    except Messages.DoesNotExist:
-        allMessages = 0
-        unread_messages = 0
+    allRecievedMessages = Messages.objects.filter(Q(reciever = request.user, reciever_del=False) 
+                                                    | Q(sender = request.user, sender_del=False))
+    print("*******AllMessage*********")
+    print(allRecievedMessages)
+    
+    differentUsersMessages = allRecievedMessages.filter(parent_message__isnull=True)
+    print("*******AllParent*********")
+    print(differentUsersMessages)
+    parentMessages_notRead = allRecievedMessages.filter(is_read=False,parent_message__isnull=False, reciever=request.user)
+    print("*******AllNotReadMessages*********")
+    print(parentMessages_notRead)
+
+    notReadParent = []
+    readParent = []
+    for msg in differentUsersMessages:
+        for msgg in parentMessages_notRead:
+            if msgg.getParentMessage() == msg:
+                notReadParent.append(msg)
+            else:
+                readParent.append(msg)
+
+    print("*******notReadParent*********")
+    print(notReadParent[0].message + " || " + notReadParent[1].message)
+
+    print("*******readParent*********")
+    print(readParent)
 
     '''
     def getOneMessage(actualmessages):
@@ -100,8 +120,8 @@ def home(request):
     getOneMessage(allMessages)
     '''
     context = {
-        'messages' : allMessages,
-        'unreaded' : unread_messages
+        'notReadParent' : notReadParent,
+        'readParent' : readParent
     }
 
 
@@ -191,12 +211,15 @@ def markItRead(request):
             message.is_read = True
             message.save()
 
-        if message:
-            child = message.get_smallest_child()
-            responces = child.get_message_info()
+        # if message:
+        #     child = message.get_smallest_child()
+        #     responces = child.get_message_info()
           
         context = {
-            'parent_message' : responces,
+            'id': message.pk,
+            'content': message.message,
+            'title': message.title,
+            'date': message.date_created, 
             'fichiers' : file_urls,
         }
         return JsonResponse(context)
@@ -209,38 +232,45 @@ def submitResponse(request):
     if request.method == 'POST' and 'response' in request.POST:
         message_id = request.POST.get('message_id')
         response_content = request.POST.get('response')
-        senderId = request.POST.get('senderId')
-        receiverId = request.POST.get('receiverId')
+        # senderId = request.POST.get('senderId')
+        # receiverId = request.POST.get('receiverId')
 
-        sender_user=User.objects.get(pk=senderId)
-        receiver_user=User.objects.get(pk=receiverId)
+        # sender_user=User.objects.get(pk=senderId)
+        # receiver_user=User.objects.get(pk=receiverId)
+
+        #Get The First Message to Make it Parent To all other Responses
+        def getFirstParent(msg):
+            if msg.parent_message is None:
+                return msg
+            else:
+                getFirstParent(msg.parent_message)
+
+        try:
+            message = Messages.objects.get(pk=message_id)
+        except Messages.DoesNotExist:
+            return JsonResponse({'error': 'Message Does not Exist Anymore'}) 
+            
 
         final_receiver= None
-        if request.user == receiver_user:
-            final_receiver = sender_user
-        if request.user == sender_user:
-            final_receiver = receiver_user
-
+        if request.user == message.sender:
+            final_receiver = message.reciever
+        else:
+            final_receiver = message.sender
+        
 
         # Get the message object
-        message = get_object_or_404(Messages, id=message_id)
-        child = message.get_smallest_child()
+        
         # Save the response in the database
         response_message = Messages.objects.create(
             sender=request.user,
             reciever=final_receiver,
-            parent_message=child,
+            parent_message=getFirstParent(message),
             message=response_content, 
         )
-        child.child_message = response_message
-        child.save()
         # You can also update other fields like sender_del, reciever_del, etc.
 
         return JsonResponse({
-            'responseContent': response_message.id,
-            'sender': response_message.sender.username,  # Include any other sender details you need
             'message_content': response_message.message,
-            'is_read': response_message.is_read,
         })
 
     return JsonResponse({'error': 'Invalid request'})

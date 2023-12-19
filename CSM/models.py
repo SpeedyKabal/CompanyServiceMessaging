@@ -67,8 +67,6 @@ class Messages(models.Model):
     sender_del = models.BooleanField(default=False)
     reciever_del = models.BooleanField(default=False)
     parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='responses')
-    child_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='child')
-
 
     def __str__(self):
         return self.sender.first_name + " " + self.sender.last_name
@@ -100,11 +98,22 @@ class Messages(models.Model):
 
         return message_info
     
-    def get_smallest_child(self):
-        if self.child_message is None:
-            return self
+    counter = 0
+    def getFirstParent(self, receiver):
+        if self.parent_message is None:
+            receiver = self.reciever
+            return self, receiver, counter
         else:
-            return self.child_message.get_smallest_child()
+            if receiver == self.reciever and self.is_read == False:
+                counter = counter + 1
+            return self.parent_message.getFirstParent()
+    
+    def getParentMessage(self):
+        if self.parent_message:
+            return self.parent_message.getParentMessage()
+        else:
+            return self
+
 
 
 
@@ -119,7 +128,7 @@ def generate_filename(instance, filename):
     unique_filename = f"{current_datetime.strftime('%Y%m%d%H%M%S')}{file_extension}"
 
     # Return the generated filename
-    return unique_filename
+    return "UploadedFiles/" + unique_filename
 
 
 

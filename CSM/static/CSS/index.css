@@ -7,8 +7,9 @@ body{
 
 
 .files{
-    width: 15rem;
-    height: 5rem;
-    overflow: hidden;
+    width:17%;
+    height: calc(100% - 3rem);
+    padding: 0 8px 4px 8px;
+    overflow: auto;
 }
 

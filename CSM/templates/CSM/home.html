@@ -52,9 +52,8 @@
             <div class="container my-4 px-4 flex h-auto ">
                 <!-- Senders container -->
                 <div class="w-[20%] min-h-[26rem] max-h-[27rem] flex flex-col-reverse gap-1 border-r-4 border-solid border-slate-400 bg-cyan-500 rounded-l-lg overflow-hidden overflow-y-auto scroll-smooth sender-container">
-                    {% if messages  != 0 %}
-                        {% for message in messages %}
-                            {% if message.id in unreaded %}
+                    {% if notReadParent  != 0 %}
+                        {% for message in notReadParent %}
                                 <a class="bg-red-200 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-200 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
                                     id="{{message.reciever}}{{message.id}}"
                                     data-message-id="{{ message.id }}"
@@ -69,7 +68,10 @@
                                         <span class="text-sm min-w-[6rem]">{{ message.sender.first_name }}</span>
                                     </div>
                                 </a>
-                            {% else %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if readParent  != 0 %}
+                        {% for message in readParent %}
                                 <a class="bg-yellow-100 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&amp;.active]:text-black/90 dark:[&amp;.active]:text-zinc-400 motion-reduce:transition-none user" 
                                     id="{{message.reciever}}{{message.id}}"
                                     data-message-id="{{ message.id }}"
@@ -84,7 +86,6 @@
                                         <span class="text-sm min-w-[6rem] drop-shadow">{{ message.sender.first_name }}</span>
                                     </div>
                                 </a>
-                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </div>
@@ -98,17 +99,17 @@
                     </div>
                     <!-- The Message -->
                     <div class="chat-container flex h-[80%] relative" data-message-id="" data-sender-id="" data-receiver-id="">
-                        <div class="Conversation w-5/6 px-2 py-2 mx-2 h-[85%] grid gap-auto justify-items-stretch overflow-scroll relative">
+                        <div class="Conversation w-5/6 px-2 py-2 mx-2 h-[85%] grid gap-auto justify-items-stretch overflow-auto relative">
 
   
                                 
 
 
                         </div>
-                        <div class="flex items-center absolute left-0 bottom-1 w-[95%]">
-                            <input type="text" placeholder="Type the Response Here" class="w-full border-2 border-slate-400 h-10 rounded-lg px-2 mx-2" name="response" id="resposeID">
+                        <div class="flex items-center absolute left-0 bottom-1 w-full">
+                            <input type="text" placeholder="Type the Response Here" class="w-full border-2 border-slate-400 h-10 rounded-lg px-2 mx-2 hidden" name="response" id="resposeID">
                         </div>
-                        <div class="files w-1/12 flex border-2 border-slate-300 bg-cyan-100 text-xs">
+                        <div class="files flex border-2 border-slate-300 bg-cyan-100 text-xs">
                         </div>
                         
                     </div>
@@ -161,7 +162,9 @@
                     url: '{% url "CSM:markItRead" %}',
                     data: {'message_id': messageId},
                     success: function (data) {
+                        $('#resposeID').removeClass('hidden');
                         chatContainer.html('');
+                        $(".chat-container").attr("data-message-id", data.id)
                         // Make the Date in Readable Format -start-
                         var formattedDate = new Date(data.date);
                         var options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
@@ -176,11 +179,20 @@
 
                         */
                         // -end-
-                        $(".chat-container").attr("data-message-id", data.parent_message.id);
-                        $(".chat-container").attr("data-sender-id", data.parent_message.senderId);
-                        $(".chat-container").attr("data-receiver-id", data.parent_message.recieverid);
-                        $('.message-title').html(data.parent_message.title);
+                        $('.message-title').html(data.title);
                         $('.message-date').html(formattedDateString);
+                        if (containsArabicCharacters(data.content)) {
+                            chatContainer.append(myMessageContainer);
+                            myMessageContainer.append(myMessageP);
+                            myMessageP.attr('dir', 'rtl');
+                            myMessageP.html(data.content);
+                            console.log('arabic');
+                        } else {
+                            chatContainer.append(myMessageContainer);
+                            myMessageContainer.append(myMessageP);
+                            myMessageP.attr('dir', 'ltr');
+                            myMessageP.html(data.content);
+                        }
                         var filesContainer = $('.files');
                         filesContainer.empty(); // Clear previous content
 
@@ -188,7 +200,7 @@
                             var filesList = $('<ul class="grid gap-5 overflow-y-scroll"></ul>');
 
                             data.fichiers.forEach(function(urlfile) {
-                                var listItem = $('<li class=\"bg-red-100 flex items-center px-2 mx-2 gap-1\"><i class=\"fa-regular fa-file\"></i></li>');
+                                var listItem = $('<li class=\"flex items-center px-2 mx-2 gap-1\"><i class=\"fa-regular fa-file\"></i></li>');
                                 var fileLink = $('<a></a>', {
                                     class : "cursor-pointer text-xs",
                                     href: urlfile,
@@ -215,14 +227,10 @@
                                 chatContainer.append(newMessageContainer);
                                 newMessageContainer.append(newMessageP);
                                 newMessageP.html(ele.message);
-                                console.log(++counter +" If Statement " + ele.id );
-                                console.log( ele.sender + ele.id );
                             }else{
                                 chatContainer.append(newMyResponseContainer);
                                 newMyResponseContainer.append(newMyResponseP);
                                 newMyResponseP.html(ele.message);
-                                console.log("Else Statement " + ele.id );
-                                console.log(ele.sender + ele.id  );
                             }
                             if(ele.parent_message !=null) {add_response(ele.parent_message);}
                             
@@ -230,18 +238,7 @@
                         if (data.parent_message) {
                             add_response(data.parent_message);                            
                         }
-                        // if (containsArabicCharacters(data.content)) {
-                        //     chatContainer.append(myMessageContainer);
-                        //     myMessageContainer.append(myMessageP);
-                        //     myMessageP.attr('dir', 'rtl');
-                        //     myMessageP.html(data.content);
-                        //     console.log('arabic');
-                        // } else {
-                        //     chatContainer.append(myMessageContainer);
-                        //     myMessageContainer.append(myMessageP);
-                        //     myMessageP.attr('dir', 'ltr');
-                        //     myMessageP.html(data.content);
-                        // }
+
                     },
                     error: function (xhr, status, error) {
                         $('.message-content').html('Error submitting the form');
@@ -304,8 +301,6 @@
 
             function submitResponse() {
                 var messageId = $('.chat-container').data('message-id');
-                var senderId= $('.chat-container').data('sender-id');   // Assuming you want to respond to the selected message
-                var receiverId= $('.chat-container').data('receiver-id');   // Assuming you want to respond to the selected message
                 var responseContent = $('#resposeID').val();
 
                 var csrfToken = getCookie('csrftoken');
@@ -316,13 +311,16 @@
                     data: {
                         'message_id': messageId,
                         'response': responseContent,
-                        'senderId':senderId,
-                        'receiverId':receiverId,
                         'csrfmiddlewaretoken': csrfToken,
                     },
                     success: function (data) {
+                        var anotherNewMyResponseContainer = $('<div class="flex w-2/3 justify-self-end bg-slate-100 rounded-lg px-2"></div>');
+                        var anotherNewMyResponseP = $('<p class="text-2xl overflow-y-auto whitespace-pre-line"></p>');
                         // Update the response content in the HTML
-                        $('.response-content').html(data.message_content);
+                        chatContainer.append(anotherNewMyResponseContainer);
+                        anotherNewMyResponseContainer.append(anotherNewMyResponseP);
+                        anotherNewMyResponseP.html(data.message_content);
+
                         // Clear the response input after submission
                         $('#response-input').val('');
                     },
