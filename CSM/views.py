@@ -76,30 +76,16 @@ def home(request):
 
     allRecievedMessages = Messages.objects.filter(Q(reciever = request.user, reciever_del=False) 
                                                     | Q(sender = request.user, sender_del=False))
-    print("*******AllMessage*********")
-    print(allRecievedMessages)
     
     differentUsersMessages = allRecievedMessages.filter(parent_message__isnull=True)
-    print("*******AllParent*********")
-    print(differentUsersMessages)
-    parentMessages_notRead = allRecievedMessages.filter(is_read=False,parent_message__isnull=False, reciever=request.user)
-    print("*******AllNotReadMessages*********")
-    print(parentMessages_notRead)
 
     notReadParent = []
     readParent = []
     for msg in differentUsersMessages:
-        for msgg in parentMessages_notRead:
-            if msgg.getParentMessage() == msg:
-                notReadParent.append(msg)
-            else:
-                readParent.append(msg)
-
-    print("*******notReadParent*********")
-    print(notReadParent[0].message + " || " + notReadParent[1].message)
-
-    print("*******readParent*********")
-    print(readParent)
+        if msg.responses.filter(reciever = request.user, is_read = False).count() > 0:
+            notReadParent.append(msg)
+        else:
+            readParent.append(msg)
 
     '''
     def getOneMessage(actualmessages):
@@ -198,11 +184,10 @@ def sendMessage(request):
 
 @csrf_exempt 
 def markItRead(request):
-    responces = None
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         message_id = request.POST.get('message_id')
         try:
-            message = Messages.objects.get(id=message_id)
+            message = Messages.objects.get(pk=message_id)
         except Messages.DoesNotExist:
             message = 0
         files = Files.objects.filter(message_id = message_id)
@@ -211,16 +196,14 @@ def markItRead(request):
             message.is_read = True
             message.save()
 
-        # if message:
-        #     child = message.get_smallest_child()
-        #     responces = child.get_message_info()
+        childMessages = message.responses.filter(reciever=request.user, is_read = False)
+        for msg in childMessages:
+            msg.is_read = True
+            msg.save()
           
         context = {
-            'id': message.pk,
-            'content': message.message,
-            'title': message.title,
-            'date': message.date_created, 
-            'fichiers' : file_urls,
+            'responses': message.message_and_responses_to_dict(),
+            'fichiers':file_urls
         }
         return JsonResponse(context)
     else:
@@ -237,14 +220,6 @@ def submitResponse(request):
 
         # sender_user=User.objects.get(pk=senderId)
         # receiver_user=User.objects.get(pk=receiverId)
-
-        #Get The First Message to Make it Parent To all other Responses
-        def getFirstParent(msg):
-            if msg.parent_message is None:
-                return msg
-            else:
-                getFirstParent(msg.parent_message)
-
         try:
             message = Messages.objects.get(pk=message_id)
         except Messages.DoesNotExist:
@@ -257,14 +232,11 @@ def submitResponse(request):
         else:
             final_receiver = message.sender
         
-
-        # Get the message object
-        
         # Save the response in the database
         response_message = Messages.objects.create(
             sender=request.user,
             reciever=final_receiver,
-            parent_message=getFirstParent(message),
+            parent_message=message,
             message=response_content, 
         )
         # You can also update other fields like sender_del, reciever_del, etc.

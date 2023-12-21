@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 from django.utils import timezone
 import os
 from datetime import datetime
@@ -68,51 +69,24 @@ class Messages(models.Model):
     reciever_del = models.BooleanField(default=False)
     parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='responses')
 
+
     def __str__(self):
-        return self.sender.first_name + " " + self.sender.last_name
+        return self.sender.last_name + " -> " + self.reciever.last_name + " : " + self.message[:5]
     
-    def get_message_info(self):
-        
-        """
-        Recursively traverse parent messages and collect information.
-        """
-        message_info = {
-                        'id': self.pk,
-                        'sender': self.sender.first_name + " " + self.sender.last_name,
-                        'senderId': self.sender.pk,
-                        'reciever' : self.reciever.first_name + " " + self.reciever.last_name,
-                        'recieverid' : self.reciever.pk,
-                        'message': self.message,
-                        'title':self.title,
-                        'date_created': self.date_created.isoformat(),
-                        'is_read': self.is_read,
-                        'sender_del': self.sender_del,
-                        'reciever_del': self.reciever_del,
-        }
-
-        # Check if there is a parent message
-        if self.parent_message:
-            # Recursive call to get parent message info
-            parent_info = self.parent_message.get_message_info()
-            message_info['parent_message'] = parent_info
-
-        return message_info
-    
-    counter = 0
-    def getFirstParent(self, receiver):
-        if self.parent_message is None:
-            receiver = self.reciever
-            return self, receiver, counter
-        else:
-            if receiver == self.reciever and self.is_read == False:
-                counter = counter + 1
-            return self.parent_message.getFirstParent()
-    
+    #Get The First Message to Make it Parent To all other Responses  
     def getParentMessage(self):
         if self.parent_message:
             return self.parent_message.getParentMessage()
         else:
             return self
+
+    def message_and_responses_to_dict(self):
+        #Recursively convert Messages instance and its responses to a dictionary.
+        message_dict = model_to_dict(self)
+        message_dict['date'] = self.date_created.isoformat() if self.date_created else None
+        message_dict['responses'] = [response.message_and_responses_to_dict() for response in self.responses.all()]
+
+        return message_dict
 
 
 
@@ -128,7 +102,7 @@ def generate_filename(instance, filename):
     unique_filename = f"{current_datetime.strftime('%Y%m%d%H%M%S')}{file_extension}"
 
     # Return the generated filename
-    return "UploadedFiles/" + unique_filename
+    return unique_filename
 
 
 
@@ -139,5 +113,5 @@ class Files(models.Model):
 
 
     def __str__(self):
-        return self.message_id.sender.first_name
+        return self.message_id.sender.last_name
 
