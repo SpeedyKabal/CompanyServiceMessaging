@@ -99,7 +99,7 @@
                     </div>
                     <!-- The Message -->
                     <div class="chat-container flex h-[80%] relative" data-message-id="" data-sender-id="" data-receiver-id="">
-                        <div class="Conversation w-5/6 px-2 py-2 mx-2 h-[85%] grid gap-auto justify-items-stretch overflow-auto relative">
+                        <div class="Conversation w-5/6 px-2 py-2 mx-2 h-[85%] grid gap-auto justify-items-stretch overflow-auto relative gap-2">
 
   
                                 
@@ -129,6 +129,14 @@
 
     <script>
         $(document).ready(function () {
+
+            var messageIdList = [];
+            // Iterate through existing a tags and store data-message-id values
+            $('.sender-container a').each(function() {
+            var messageId = $(this).data('message-id');
+                messageIdList.push(messageId);
+            });
+            console.log(messageIdList);
             var chatContainer = $('.Conversation');
 
             var myMessageContainer = $('<div class="message w-2/3 bg-blue-100 justify-self-start rounded-lg px-2"></div>');
@@ -156,14 +164,6 @@
             var employeesContainer = $(".sender-container");
             var scrollAmount = $(".sender-container a").length * 47
             employeesContainer.scrollTop(-scrollAmount);
-            // Set the scroll position to the bottom when the content changes
-            //employeesContainer.on("DOMSubtreeModified", function () {
-            //    employeesContainer.scrollTop(employeesContainer.prop("scrollHeight"));
-            //});
-
-            // Set the scroll position to the bottom initially
-            //employeesContainer.scrollTop(employeesContainer.prop("scrollHeight"));
-
 
             $(document).on('click', '.user',function (e){ 
                 e.preventDefault();
@@ -183,30 +183,15 @@
                         var formattedDate = new Date(data.responses.date);
                         var options = { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'};
                         var formattedDateString = formattedDate.toLocaleDateString('fr-FR', options);
-                        // -end-
+
                         // a function to check whether the message in arabic or Not -Start-
                         function containsArabicCharacters(str) {
                             var arabicRegex = /[\u0600-\u06FF]/;
                             return arabicRegex.test(str);
                         }
 
-                        // -end-
                         $('.message-title').html(data.responses.title);
                         $('.message-date').html(formattedDateString);
-                        /*
-                        if (containsArabicCharacters(data.MessageWithChilds.message)) {
-                            chatContainer.append(myMessageContainer);
-                            myMessageContainer.append(myMessageP);
-                            myMessageP.attr('dir', 'rtl');
-                            myMessageP.html(data.MessageWithChilds.message);
-                            console.log('arabic');
-                        } else {
-                            chatContainer.append(myMessageContainer);
-                            myMessageContainer.append(myMessageP);
-                            myMessageP.attr('dir', 'ltr');
-                            myMessageP.html(data.MessageWithChilds.message);
-                        }
-                        */
                         var filesContainer = $('.files');
                         filesContainer.empty(); // Clear previous content
 
@@ -234,52 +219,32 @@
 
                         function add_response(ele){
                             var newMessageContainer = $('<div class="w-2/3 bg-blue-100 justify-self-start rounded-lg px-2"></div>');
-                            var newMessageP = $('<p class="text-md"></p>');
                             var newMyResponseContainer = $('<div class="flex w-2/3 justify-self-end bg-slate-100 rounded-lg px-2"></div>');
-                            var newMyResponseP = $('<p class="text-2xl overflow-y-auto whitespace-pre-line"></p>');
-                             
+                            var newMessageP = $('<p class="text-xs"></p>');
+                            var newMyResponseP = $('<p class="text-xs whitespace-pre-line"></p>');     
                             if(ele.sender == '{{request.user.pk}}'){
-                                
-                                chatContainer.append(myMessageContainer);
-                                myMessageContainer.append(myMessageP);
-                                myMessageP.html(ele.message);
+                                newMessageP.html(ele.message);
                                 if (containsArabicCharacters(ele.message)) {
-                                    myMessageP.attr('dir', 'rtl');
+                                    newMessageP.attr('dir', 'rtl');
                                 } else {
-                                    myMessageP.attr('dir', 'ltr');
+                                    newMessageP.attr('dir', 'ltr');
                                 }
-                                console.log("From Message");
-                                console.log(myMessageP.html());
-                                console.log(chatContainer);
+                                chatContainer.append(newMessageContainer);
+                                newMessageContainer.append(newMessageP);
                             }else{
-                                chatContainer.append(newMyResponseContainer);
-                                newMyResponseContainer.append(newMyResponseP);
+
                                 newMyResponseP.html(ele.message);
                                 if (containsArabicCharacters(ele.message)) {
                                     newMyResponseP.attr('dir', 'rtl');
                                 } else {
                                     newMyResponseP.attr('dir', 'rtl');
                                 }
-                                console.log("From Response");
-                                console.log(newMyResponseP.html());
-                                console.log(chatContainer);
-                            }
-                            //if (ele.responses && ele.responses.length > 0) {
-                                // Iterate over the array of responses
-                                console.log('good job!')
-                                ele.responses.forEach(function (response) {
-                                    add_response(response);
-                                });
-                            //}else{
-                                //console.log("*****from Child****");
-
-                            //}
-                            //if(ele.responses) {add_response(ele.responses);}
-                            
+                                chatContainer.append(newMyResponseContainer);
+                                newMyResponseContainer.append(newMyResponseP);
+                            }                                            
                         }
-                        if (data.responses) {
-                            add_response(data.responses);                            
-                        }
+                        if (data.responses) {add_response(data.responses)}
+                        data.responses.responses.forEach(function (response) {add_response(response)});
 
                     },
                     error: function (xhr, status, error) {
@@ -321,15 +286,26 @@
                     data    : {'employeeId' : employeeId,
                                'date_message' :  lastCheckTime },
                     success : function (data){
-                        $('.sender-container').append(data.latestMessage);
-                        lastCheckTime =  new Date().toISOString();
+                        if (data.latestMessage.trim() !== "") {
+                            console.log(data);
+                            $('.sender-container').append(data.latestMessage);
+                            var newMessageId = $('.sender-container a:first').data('message-id');
+                            if ($.inArray(newMessageId, messageIdList) !== -1) {
+                                $('.sender-container a:first').remove();
+                                $('.sender-container a [data-message-id="' + newMessageId + '"]').removeClass('bg-yellow-100');
+                                $('.sender-container a [data-message-id="' + newMessageId + '"]').addClass('bg-red-200');
+                            } else {
+                                $('.sender-container a:first').removeClass("hidden");
+                            }
+                            lastCheckTime =  new Date().toISOString();
+                        }
                     },
                     error   : function (xhr, status, error){
                         console.error('Error:', error);
                     }
                 });
             };
-            setInterval(fetchNewMessages, 3000);
+            setInterval(fetchNewMessages, 6000);
             $("#resposeID").keypress(function (e) {
                 if (e.which === 13) { // 13 is the keycode for "Enter"
                     e.preventDefault();
@@ -356,7 +332,7 @@
                     },
                     success: function (data) {
                         var anotherNewMyMessageContainer = $('<div class="flex w-2/3 justify-self-start bg-blue-100 rounded-lg px-2"></div>');
-                        var anotherNewMyMessageP = $('<p class="text-2xl overflow-y-auto whitespace-pre-line"></p>');
+                        var anotherNewMyMessageP = $('<p class="text-xs overflow-y-auto whitespace-pre-line"></p>');
                         // Update the response content in the HTML
                         chatContainer.append(anotherNewMyMessageContainer);
                         anotherNewMyMessageContainer.append(anotherNewMyMessageP);

@@ -1,6 +1,6 @@
 {% if messages  != 0 %}
     {% for message in messages %}
-        <a class="bg-red-200 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&.active]:text-black/90 dark:[&.active]:text-zinc-400 motion-reduce:transition-none user" 
+        <a class="hidden bg-red-200 cursor-pointer rounded-l-lg w-full text-neutral-500 transition duration-200 hover:bg-slate-100 hover:text-blue-700 hover:ease-in-out focus:text-green-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 sm:flex [&.active]:text-black/90 dark:[&.active]:text-zinc-400 motion-reduce:transition-none user" 
             id="{{message.reciever}}{{message.id}}"
             data-message-id="{{ message.id }}"
             data-message-date="{{ message.date_created|date:'Y-m-d'}}">

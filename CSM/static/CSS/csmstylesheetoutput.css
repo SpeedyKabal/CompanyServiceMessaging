@@ -862,10 +862,6 @@ video {
   min-height: 100vh;
 }
 
-.w-1\/12 {
-  width: 8.333333%;
-}
-
 .w-14 {
   width: 3.5rem;
 }
@@ -924,10 +920,6 @@ video {
 
 .w-\[80\%\] {
   width: 80%;
-}
-
-.w-\[95\%\] {
-  width: 95%;
 }
 
 .w-full {
@@ -1057,6 +1049,10 @@ video {
   gap: 1.25rem;
 }
 
+.gap-4 {
+  gap: 1rem;
+}
+
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.5rem * var(--tw-space-x-reverse));
@@ -1094,10 +1090,6 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
-}
-
-.overflow-scroll {
-  overflow: scroll;
 }
 
 .overflow-y-auto {

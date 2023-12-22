@@ -82,7 +82,7 @@ def home(request):
     notReadParent = []
     readParent = []
     for msg in differentUsersMessages:
-        if msg.responses.filter(reciever = request.user, is_read = False).count() > 0:
+        if ((msg.responses.filter(reciever = request.user, is_read = False).count() > 0) or (msg.is_read == False and not msg.responses.exists() and msg.reciever == request.user)):
             notReadParent.append(msg)
         else:
             readParent.append(msg)
@@ -215,11 +215,7 @@ def submitResponse(request):
     if request.method == 'POST' and 'response' in request.POST:
         message_id = request.POST.get('message_id')
         response_content = request.POST.get('response')
-        # senderId = request.POST.get('senderId')
-        # receiverId = request.POST.get('receiverId')
 
-        # sender_user=User.objects.get(pk=senderId)
-        # receiver_user=User.objects.get(pk=receiverId)
         try:
             message = Messages.objects.get(pk=message_id)
         except Messages.DoesNotExist:
@@ -279,7 +275,8 @@ def fetch_new_messages(request):
     if employeeId is not None and dateTime is not None:
         lastCheck = timezone.datetime.fromisoformat(dateTime)
         new_messages = Messages.objects.filter(reciever_id = employeeId, date_created__gt = lastCheck, is_read = False)
-        newMessageHtml = render_to_string('CSM/newUserHtml.html', {'messages': new_messages})
+        messageUsersContainer = [msg.getParentMessage() for msg in new_messages]
+        newMessageHtml = render_to_string('CSM/newUserHtml.html', {'messages': messageUsersContainer})
         return JsonResponse({'latestMessage' : newMessageHtml })
     else:
         return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})

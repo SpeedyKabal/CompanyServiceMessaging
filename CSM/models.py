@@ -113,5 +113,5 @@ class Files(models.Model):
 
 
     def __str__(self):
-        return self.message_id.sender.last_name
+        return self.message_id.sender.last_name + " " + self.message_id.title[:10]
 
