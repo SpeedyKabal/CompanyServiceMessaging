@@ -227,10 +227,21 @@
 
                         // Append All Messages with thier Responses
                         function add_response(ele){
-                            var newMessageContainer = $('<div class="w-2/3 bg-blue-100 justify-self-start rounded-lg px-2"></div>');
-                            var newMyResponseContainer = $('<div class="flex w-2/3 justify-self-end bg-slate-100 rounded-lg px-2"></div>');
-                            var newMessageP = $('<p class="text-xs"></p>');
-                            var newMyResponseP = $('<p class="text-xs whitespace-pre-line"></p>');     
+                            var newMessageContainer = $('<div class="flex flex-col w-2/3 bg-blue-100 justify-self-start justify-between rounded-lg px-2"></div>');
+                            var newMyResponseContainer = $('<div class="flex flex-col w-2/3 justify-self-end bg-slate-100 justify-between rounded-lg px-2"></div>');
+                            var newMessageP = $('<p class="text-md"></p>');
+                            var infos = $('<div class="flex px-2 text-sm justify-between text-rose-300 hover:text-blue-600"></div>');
+                            var newMyResponseP = $('<p class="text-md whitespace-pre-line"></p>');
+                            var formatDate = new Date(ele.date);
+                            var timeOptions = { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'};
+                            var formatEleString = formatDate.toLocaleDateString('fr-FR', timeOptions);
+                            if(ele.is_read == true){
+                                infos.prepend("<p>" + formatEleString + "</p>");
+                                infos.prepend("<p>✓✓</p>");
+                            }else{
+                                infos.prepend("<p>" + formatEleString + "</p>");
+                                infos.prepend("<p>Not Seen</p>");
+                            }    
                             if(ele.sender == '{{request.user.pk}}'){
                                 newMessageP.html(ele.message);
                                 if (containsArabicCharacters(ele.message)) {
@@ -240,6 +251,7 @@
                                 }
                                 chatContainer.append(newMessageContainer);
                                 newMessageContainer.append(newMessageP);
+                                newMessageContainer.append(infos);
                             }else{
 
                                 newMyResponseP.html(ele.message);
@@ -250,6 +262,7 @@
                                 }
                                 chatContainer.append(newMyResponseContainer);
                                 newMyResponseContainer.append(newMyResponseP);
+                                newMyResponseContainer.append(infos);
                             }                                            
                         }
                         if (data.responses) {add_response(data.responses)}
