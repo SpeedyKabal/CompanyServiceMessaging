@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 app_name = "CSM"
 
 urlpatterns = [
-    path('', views.index, name="index"),
+    path('', views.index, name="loginPage"),
     path('register/', views.signMeUp, name="SignUp"),
     path('home/', views.home, name="home"),
     path('inbox/', views.inbox, name="inbox"),

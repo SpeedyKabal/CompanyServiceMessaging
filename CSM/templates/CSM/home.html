@@ -108,6 +108,7 @@
                         </div>
                         <div class="flex items-center absolute left-0 bottom-1 w-full">
                             <input type="text" placeholder="Type the Response Here" class="w-full border-2 border-slate-400 h-10 rounded-lg px-2 mx-2 hidden" name="response" id="resposeID">
+                            <button class="SubmitBtn text-2xl text-blue-300 hover:text-green-300 focus:text-green-300 hidden"><i class="fa-solid fa-angles-right"></i></button>
                         </div>
                         <div class="files flex border-2 border-slate-300 bg-cyan-100 text-xs">
                         </div>
@@ -138,21 +139,28 @@
             });
 
             var chatContainer = $('.Conversation');
+            var responseBtn = $(".SubmitBtn");
 
             // a function to check whether the message in arabic or Not
             function containsArabicCharacters(str) {
-                var arabicRegex = /[\u0600-\u06FF]/;
-                return arabicRegex.test(str);
+                var arabicRegex = ["ض","ص","ث","ق","ف","غ","إ","ع","ه","خ","ح","ج","د","ذ","ش","س","ي","ب","ل","ا","أ","ت","ن","م","ك","ط","ئ","ء","ؤ","ر","ى","آ","و","ز","ظ"];
+                for (const alphabet of arabicRegex) {
+                    if (str.includes(alphabet)) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
-            $("#resposeID").keypress(function (e) {
-                if (e.which === 13) { // 13 is the keycode for "Enter"
+            $("#resposeID").on('keyup', function(e){
+                if (e.key === 'Enter') {
                     e.preventDefault();
-                    submitResponse();
-                    $("#resposeID").val('');
+                    responseBtn.click();
                 }
             });
-
+            responseBtn.on('click', function(){
+                submitResponse();
+            })
             $('#resposeID').on('input', function() {
                 var inputValue = $(this).val();
                 // Check if the input contains Arabic characters
@@ -192,6 +200,7 @@
                     data: {'message_id': messageId},
                     success: function (data) {
                         $('#resposeID').removeClass('hidden');
+                        responseBtn.removeClass('hidden');
                         chatContainer.html('');
 
                         $(".chat-container").attr("data-message-id", data.responses.id)
@@ -227,9 +236,9 @@
 
                         // Append All Messages with thier Responses
                         function add_response(ele){
-                            var newMessageContainer = $('<div class="flex flex-col w-2/3 bg-blue-100 justify-self-start justify-between rounded-lg px-2"></div>');
-                            var newMyResponseContainer = $('<div class="flex flex-col w-2/3 justify-self-end bg-slate-100 justify-between rounded-lg px-2"></div>');
-                            var newMessageP = $('<p class="text-md"></p>');
+                            var newMessageContainer = $('<div class="messageText flex flex-col w-2/3 bg-blue-100 justify-self-start justify-between rounded-lg px-2"></div>');
+                            var newMyResponseContainer = $('<div class="messageText flex flex-col w-2/3 justify-self-end bg-slate-100 justify-between rounded-lg px-2"></div>');
+                            var newMessageP = $('<p class="text-md whitespace-pre-line"></p>');
                             var infos = $('<div class="flex px-2 text-sm justify-between text-rose-300 hover:text-blue-600"></div>');
                             var newMyResponseP = $('<p class="text-md whitespace-pre-line"></p>');
                             var formatDate = new Date(ele.date);
@@ -258,7 +267,7 @@
                                 if (containsArabicCharacters(ele.message)) {
                                     newMyResponseP.attr('dir', 'rtl');
                                 } else {
-                                    newMyResponseP.attr('dir', 'rtl');
+                                    newMyResponseP.attr('dir', 'ltl');
                                 }
                                 chatContainer.append(newMyResponseContainer);
                                 newMyResponseContainer.append(newMyResponseP);
@@ -277,6 +286,7 @@
                     complete: function () {
                         // Hide loading overlay after the request is completed (success or error)
                         loading.css("display", "none");
+                        scrollMessageContaineer();
                     }
                 });
                 $(this).removeClass("bg-red-200");
@@ -301,7 +311,7 @@
             var lastCheckTime = new Date().toISOString();
             
             function fetchNewMessages(){
-                var employeeId = {{ request.user.id }}
+                var employeeId = {{ request.user.id }};
                 $.ajax({
                     type    :"GET",
                     url     : "{% url 'CSM:newMessages' %}",
@@ -325,7 +335,7 @@
                         console.error('Error:', error);
                     }
                 });
-            };
+            }
             setInterval(fetchNewMessages, 6000);
 
 
@@ -344,23 +354,55 @@
                         'csrfmiddlewaretoken': csrfToken,
                     },
                     success: function (data) {
-                        var anotherNewMyMessageContainer = $('<div class="flex w-2/3 justify-self-start bg-blue-100 rounded-lg px-2"></div>');
-                        var anotherNewMyMessageP = $('<p class="text-xs overflow-y-auto whitespace-pre-line"></p>');
-                        // Update the response content in the HTML
+                        var anotherNewMyMessageContainer = $('<div class="messageText flex flex-col w-2/3 bg-blue-100 justify-self-start justify-between rounded-lg px-2"></div>');
+                        var anotherNewMyMessageP = $('<p class="text-md whitespace-pre-line"></p>');
+                        var infos = $('<div class="flex px-2 text-sm justify-between text-rose-300 hover:text-blue-600"></div>');
+                        var formatDate = new Date();
+                        var formatEleString = formatDate.toLocaleDateString('fr-FR',{ day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit'});
+
+                        infos.prepend("<p>Not Seen</p>");
+                        infos.prepend("<p>" + formatEleString + "</p>");
+                        anotherNewMyMessageP.html(responseContent);
+                        if (containsArabicCharacters(responseContent)) {
+                            anotherNewMyMessageP.attr('dir', 'rtl');
+                        } else {
+                            anotherNewMyMessageP.attr('dir', 'ltr');
+                        }
                         chatContainer.append(anotherNewMyMessageContainer);
                         anotherNewMyMessageContainer.append(anotherNewMyMessageP);
-                        anotherNewMyMessageP.html(data.message_content);
+                        anotherNewMyMessageP.append(infos);
 
                         // Clear the response input after submission
                         $('#response-input').val('');
                     },
                     error: function (xhr, status, error) {
                         console.error('Error submitting response:', error);
+                    },
+                    complete: function () {
+                        $("#resposeID").val('');
+                        scrollMessageContaineer();
                     }
+                    
                 });
-            }   
+                scrollMessageContaineer();
+            }
+            // Scroll down to Bottom 
+            function scrollMessageContaineer(){
+                var messageContainer = $(".Conversation");
+                var messageElements = $(".messageText");
+                var scrollAmount = 0;
+                if (messageElements.length > 0){
+                    messageElements.each(function() {
+                        // Add the height of each element to the total
+                        scrollAmount += $(this).height();
+                    });
+                }
+                //Scroll Conversation
+                messageContainer.scrollTop(scrollAmount);
+            }
 
         });
+
     </script>
     
 {% endblock %}

@@ -9,7 +9,7 @@
       <!-- Brand -->
       <a
         class="mx-2 my-1 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 lg:mb-0 lg:mt-0"
-        href="/"
+        href='{% url "CSM:home" %}'
       >
         <img
           class="mr-2"
@@ -27,7 +27,7 @@
       <li class="px-2">
         <a
           class="text-neutral-500 transition text-2xl duration-200 hover:text-neutral-700 hover:ease-in-out focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-300 dark:focus:text-neutral-300 [&.active]:text-black/90 dark:[&.active]:text-neutral-400 motion-reduce:transition-none"
-          href="/">
+          href="{% url 'CSM:home' %}">
           <i class="fa-solid fa-house"></i>
           <!-- Notification counter -->
           <span
@@ -141,7 +141,7 @@
           if(parseInt($(".notificationCounter").text()) > 0){
               $('#notification_new_message')[0].play();
           }
-      }, 20000);
+      }, 10000);
 
       function fetchNewMessagesNotifications(){
           var employeeId = {{ request.user.id }}

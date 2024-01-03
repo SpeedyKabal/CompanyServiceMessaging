@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('DJANGO_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =  True
 
-ALLOWED_HOSTS = ['0.0.0.0/0','127.0.0.1' , '192.168.3.20','192.168.1.51','csm.dz']
+ALLOWED_HOSTS = ['0.0.0.0/0','127.0.0.1' , '192.168.3.20','192.168.1.50','csm.dz']
 
 
 # Application definition
@@ -88,7 +88,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
 
 
 # Password validation

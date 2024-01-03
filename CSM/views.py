@@ -15,10 +15,11 @@ import re, os, uuid
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 # Create your views here.
+
 
 @unauthenticated_user
 def index(request):
@@ -33,7 +34,7 @@ def index(request):
             return redirect("CSM:home")
         else:
             messages.error(request,"Username or Password Incorrect")
-            return redirect("CSM:index")
+            return redirect("CSM:loginPage")
 
     return render(request, "CSM/index.html")
 
@@ -68,7 +69,7 @@ def signMeUp(request):
 @authenticated_user
 def signMeOut(request):
     auth.logout(request)
-    return HttpResponseRedirect("/")
+    return redirect("CSM:loginPage")
 
 
 @authenticated_user
@@ -117,7 +118,10 @@ def home(request):
 @authenticated_user
 def profile(request, profile_user):
     # Using get_object_or_404 to raise a 404 if the user doesn't exist
-    userp = get_object_or_404(Employee, user__username = profile_user)
+    try:
+        userp = get_object_or_404(Employee, user__username = profile_user)
+    except Employee.DoesNotExist:
+        raise Http404("Employee Does not Exist!")
     return render(request, "CSM/profile.html", {
         'userprofile': userp })
 
@@ -269,6 +273,7 @@ def getMyMessages(request):
         return JsonResponse({'error':'Invalid request'})
 
 
+@csrf_exempt 
 def fetch_new_messages(request):
     employeeId = request.GET.get('employeeId') #The Id of The Sender
     dateTime = request.GET.get('date_message') #The datetime to look on database of new messages that has date_created greater than this
@@ -280,8 +285,9 @@ def fetch_new_messages(request):
         return JsonResponse({'latestMessage' : newMessageHtml })
     else:
         return JsonResponse({'error' : 'User Id or Last Ckeck time not Provided'})
-    
 
+
+@csrf_exempt 
 def fetch_new_messages_for_notification(request):
     employeeId = request.GET.get('employeeId') #The Id of The Sender
     if employeeId is not None:
