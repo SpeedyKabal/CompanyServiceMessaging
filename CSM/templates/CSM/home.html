@@ -107,7 +107,8 @@
 
                         </div>
                         <div class="flex items-center absolute left-0 bottom-1 w-full">
-                            <input type="text" placeholder="Type the Response Here" class="w-full border-2 border-slate-400 h-10 rounded-lg px-2 mx-2 hidden" name="response" id="resposeID">
+                            <input type="text" placeholder="Type the Response Here" class="w-full border-2 border-slate-400 h-10 rounded-lg pl-2 pr-12 mx-2 relative hidden" name="response" id="resposeID">
+                            <button class="trigger absolute top-[50%] right-10 translate-y-[-50%] text-[1.9rem] text-blue-400 hover:text-green-400 hidden"><i class="fa-solid fa-face-smile"></i></button>
                             <button class="SubmitBtn text-2xl text-blue-300 hover:text-green-300 focus:text-green-300 hidden"><i class="fa-solid fa-angles-right"></i></button>
                         </div>
                         <div class="files flex border-2 border-slate-300 bg-cyan-100 text-xs">
@@ -155,11 +156,15 @@
             $("#resposeID").on('keyup', function(e){
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    responseBtn.click();
+                    if ($(this).val().trim() !== '') {
+                        responseBtn.click();
+                    }
                 }
             });
             responseBtn.on('click', function(){
-                submitResponse();
+                if ($("#resposeID").val().trim() !== '') {
+                    submitResponse();
+                }
             })
             $('#resposeID').on('input', function() {
                 var inputValue = $(this).val();
@@ -202,6 +207,7 @@
                         $('#resposeID').removeClass('hidden');
                         responseBtn.removeClass('hidden');
                         chatContainer.html('');
+                        $(".trigger").removeClass('hidden');
 
                         $(".chat-container").attr("data-message-id", data.responses.id)
                         // Make the Date in Readable Format -start-
@@ -401,7 +407,20 @@
                 messageContainer.scrollTop(scrollAmount);
             }
 
+
+
+            //import { EmojiButton } from '@joeattardi/emoji-button';
+
+            const picker = new EmojiButton();
+            const trigger = document.querySelector('.trigger');
+
+            picker.on('emoji', selection => {
+            trigger.innerHTML = selection.emoji;
+            });
+
+            trigger.addEventListener('click', () => picker.togglePicker(trigger));
         });
+
 
     </script>
     
